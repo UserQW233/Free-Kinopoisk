@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name           Free kinopoisk
-// @namespace      https://github.com/eCxb3/cps
-// @version        2077v.1.4.2/4
-// @source         https://github.com/eCxb3/cps
-// @supportURL     https://github.com/eCxb3/cps
-// @updateURL      https://github.com/eCxb3/cps/raw/main/Free%20kinopoisk.user.js
-// @downloadURL    https://github.com/eCxb3/cps/raw/main/Free%20kinopoisk.user.js
+// @namespace      https://github.com/ecXbe/cps
+// @version        2077v.1.4.2/5
+// @source         https://github.com/ecXbe/cps
+// @supportURL     https://github.com/ecXbe/cps
+// @updateURL      https://github.com/ecXbe/cps/raw/main/Free%20kinopoisk.user.js
+// @downloadURL    https://github.com/ecXbe/cps/raw/main/Free%20kinopoisk.user.js
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
@@ -273,8 +273,8 @@ _________        ___.                                     __
     if (window.location.host === 'www.kinopoisk.ru') {
         addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
         document.addEventListener('DOMContentLoaded', function() {
-            $('body').on('click', 'a[href]:not(.styles_page__zbGy7)', function() {
-                $(this).off('click');
+            $('body').on('mousedown', 'a[href]:not([href*="?"])', function() {
+                $(this).off();
                 let url = $(this).attr('href');
                 window.location.href = url;
             });
