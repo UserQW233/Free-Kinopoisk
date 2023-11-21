@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/cps
-// @version        2077v.1.4.2/5
+// @version        2077v.1.4.3
 // @source         https://github.com/ecXbe/cps
 // @supportURL     https://github.com/ecXbe/cps
 // @updateURL      https://github.com/ecXbe/cps/raw/main/Free%20kinopoisk.user.js
@@ -10,12 +10,12 @@
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js
-// @include        https://www.kinopoisk.ru/*
-// @include        https://flicksbar.*/*
-// @include        *://thesaurus.allohalive.*/*
-// @include        *://*svetacdn.*/*
-// @include        *://api.*.ws/*
-// @include        *://*kodik.*/*
+// @include        /^https:\/\/www\.kinopoisk\.ru\/.*$/
+// @include        /^https:\/\/.*flicksbar\..*$/
+// @include        /^https:\/\/thesaurus\.allohalive\..*$/
+// @include        /^https:\/\/.*svetacdn\..*$/
+// @include        /^https:\/\/api\..*\.ws\/.*$/
+// @include        /^https:\/\/.*kodik\..*$/
 // @connect        www.kinopoisk.ru
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant          GM_xmlhttpRequest
@@ -128,7 +128,7 @@ _________        ___.                                     __
             $('body').append('<div class="spinner"></div>');
             addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);width: 50px;height: 50px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
             addGlobalStyle(`.header_container {background-color: #1b2229; border-radius: 48px; margin-right: 5px; width: 46px; transition: all 0.5s ease-in-out;} .header_homepage {filter: invert(45%); position: absolute; transform: translateY(32%) translateX(-35px); opacity: 0; transition: all 0.5s ease-in-out; user-select: none;} .header_homepage:hover {filter: invert(30%)} .header_container:hover {width: 80px; transition: all 0.5s ease-in-out;} .header_container:hover .header_homepage {opacity: 1; transform: translateY(32%) translateX(-2px); transition: transform 0.5s ease-in-out, opacity .5s ease-in-out;} iframe.kinobox__iframe, div.kinobox__loaderWrapper {border-radius: 10px;} body {user-select: none;} .kinobox {border-radius: 10px; box-shadow: -2px 2px 6px 2px rgba(0, 0, 0, 0.3);} .kinobox__menu--list {border-radius: 6px 0 0 6px; transition: all .2s ease-in-out; outline: none; box-shadow: -1px -1px 6px 1px rgba(0, 0, 0, 0.3);} .kinobox__menuItem {color: white; background: #41536b !important;} .kinobox__menuItem:hover {background: #7ba2d1 !important;} .kinobox__menuItem--active {background: #5d7ea5 !important;}`)
-            addGlobalStyle(`.watch_mode {position: relative; width: 20px; height: 20px;} .watch_mode:hover {filter: invert(30%) !important;} .watch_mode:before {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/top-arrow.025c12cf.svg); top: 1px; right: 0} .watch_mode:after {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/bottom-arrow.b4fcf81a.svg); top: 10px; left: 3px;} .watch_mode:before, .watch_mode:after {position: absolute; width: 8px; height: 8px; content: ""; background-repeat: no-repeat; background-position: 50%; background-size: contain;} .watch_active:before, .watch_active:after {transform: rotate(180deg)} .poster.watch, .kinobox__menu.watch {display: none !important} .united_el.watch {max-width: 97.56% !important} .VideoPleer.watch {justify-content: center}`);
+            addGlobalStyle(`.watch_mode {position: relative; width: 20px; height: 20px;} .watch_mode:hover {filter: invert(30%) !important;} .watch_mode:before {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/top-arrow.025c12cf.svg); top: 1px; right: 0} .watch_mode:after {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/bottom-arrow.b4fcf81a.svg); top: 10px; left: 3px;} .watch_mode:before, .watch_mode:after {position: absolute; width: 8px; height: 8px; content: ""; background-repeat: no-repeat; background-position: 50%; background-size: contain;} .watch_active:before, .watch_active:after {transform: rotate(180deg)} .poster.watch, .kinobox__menu.watch {display: none !important} .united_el.watch {max-width: 97.56% !important} .VideoPleer.watch {justify-content: center} .pre_info_arrow.watch {cursor: none !important; pointer-events: none} .half_arrow.first_half.watch {transform: translateX(2.4px) rotate(0deg) !important} .half_arrow.second_half.watch {transform: translateX(-2.4px) rotate(0deg) !important} .pre_info_arrow {display: flex; align-items: center; justify-content: center; cursor: pointer; width: 24px; height: 24px} .half_arrow {background-color: #171c21; width: 12px; height: 4px; border-radius: 100px; transition: } .pre_info_arrow:hover {.half_arrow {background-color: #aaa !important}}`);
             GM_xmlhttpRequest({
                 method: "GET",
                 url: 'https://www.kinopoisk.ru'+window.location.pathname,
@@ -170,7 +170,15 @@ _________        ___.                                     __
                         )
                     ).append(
                         $('<pre_info>', {style: 'display: none; margin-top: 1.6rem; justify-content: center;'}).append(
-                            $('<div>', {style: 'border: solid #171c21; border-width: 0 3px 3px 0; display: inline-block; padding: 3px; transform: rotate(45deg);', title: 'Прокрутите вниз для подробной информации'})
+                            $('<div>', {class: 'pre_info_arrow', title: 'Прокрутите вниз для подробной информации'}).append(
+                                $('<div>', {class: 'half_arrow first_half', style: 'transform: translateX(2.4px) rotate(20deg)'})
+                            ).append(
+                                $('<div>', {class: 'half_arrow second_half', style: 'transform: translateX(-2.4px) rotate(-20deg)'})
+                            ).click(function() {
+                                $('ui').css('transform', 'translateY(-65.8%)')
+                                $(this).css('pointer-events', 'none');
+                                setTimeout(() => $(this).css('pointer-events', ''), 50);
+                            })
                         )
                     ).appendTo($('body'))
 
@@ -180,9 +188,15 @@ _________        ___.                                     __
                         )
                     ).append(
                         $('<div>', {style: 'display: flex; position: absolute; align-self: end; bottom: 0; right: 0; margin: 0 16px 10px 0;'}).append(
-                            $('<i>', {class: 'watch_mode', style: 'filter: invert(45%);'}).click(function() {$(this).toggleClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer').toggleClass('watch')})
+                            $('<i>', {class: 'watch_mode', style: 'filter: invert(45%);'}).click(function() {$(this).toggleClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').toggleClass('watch');})
                         )
                     );
+                    $(document).keyup(function(e) {
+                        if (e.key === 'Escape') {
+                            $('i.watch_mode').removeClass('watch_active');
+                            $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
+                        }
+                    })
 
                     $('.information').append(
                         $('<div>', {style: 'display: flex;'}).append(
@@ -255,7 +269,7 @@ _________        ___.                                     __
                     $Video_pleer.css('display', 'flex');$('info').css('display', 'flex');$('pre_info').css('display', 'flex');
 
                     window.addEventListener("wheel", function(event) {
-                        if (event.deltaY > 0) {
+                        if (event.deltaY > 0 && !$('.watch').length) {
                             $('ui').css('transform', 'translateY(-65.8%)')
                         } else if (event.deltaY < 0) {
                             $('ui').css('transform', '');
