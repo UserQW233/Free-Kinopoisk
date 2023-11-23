@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Average Sime
-// @namespace    https://github.com/eCxb3/cps
-// @version      2077v.4-global
+// @namespace    https://github.com/ecXbe/cps
+// @version      2077v.4.1
 // @description  Adds to the website agenda.sime.md the function of calculating the average score  |  Cyberpunk Coding
 // @author       ezX
 // @match        https://agenda.sime.md/ords/f?p=*
@@ -62,21 +62,21 @@ _________        ___.                                     __
     }
 
     function editscorelist(id) {
-        let $scores = $table.find(`tbody tr:eq(${id}) td:eq(2)`).text();
+        let $scores = $table.find(`tbody tr:eq(${id}) td:eq(3)`).text();
         if (parseInt($scores) >= 9) return alert('Вам не поднять свою оценку')
 
         let $arr_of_scores = $table.find(`tbody tr:eq(${id}) td:eq(1)`).contents().filter(function() {return this.nodeType === 3}).text().split(', ').map(Number);
         let $Need_scores = nextscore($arr_of_scores, parseInt($scores));
 
         $table.find(`tbody tr:eq(${id}) td:eq(1)`).text($arr_of_scores.join(', ')).append(($('<span>', {style: 'color: red', text: `, ${$Need_scores.join(', ')}`})));
-        $table.find(`tbody tr:eq(${id}) td:eq(2)`).text(average($table.find(`tbody tr:eq(${id}) td:eq(1)`).text().split(', ').map(Number))).css('color', 'red');
+        $table.find(`tbody tr:eq(${id}) td:eq(3)`).text(average($table.find(`tbody tr:eq(${id}) td:eq(1)`).text().split(', ').map(Number))).css('color', 'red');
 
         let $New_Average_of_averages = [];
         $table.find('tbody').children().filter(s => s.nodeType !== 1).each(function() {
-            if ($(this).find('td:eq(0)').text() !== 'Educația fizică' && $(this).find('td:eq(0)').text() !== 'Educație pentru societate' && $(this).find('td:eq(0)').text() !== 'A/A') {$New_Average_of_averages.push(parseFloat(average($(this).find('td:eq(1)').text().split(', ').map(Number)).toFixed(2)))}
+            if ($(this).find('td:eq(0)').text() !== 'Educația fizică' && $(this).find('td:eq(0)').text() !== 'Educație pentru societate' && $(this).find('td:eq(0)').text() !== 'Dezvoltarea personală' && $(this).find('td:eq(0)').text() !== 'A/A') {$New_Average_of_averages.push(parseFloat(average($(this).find('td:eq(1)').text().split(', ').map(Number)).toFixed(2)))}
         });
 
-        $table.find('tbody tr:last td:eq(2)').text(parseFloat(average($New_Average_of_averages.map(Number))).toFixed(2)).css('color', 'red');
+        $table.find('tbody tr:last td:eq(3)').text(parseFloat(average($New_Average_of_averages.map(Number))).toFixed(2)).css('color', 'red');
     }
 
 
@@ -101,5 +101,5 @@ _________        ___.                                     __
         count++
         if ($(this).find('td:eq(0)').text() !== 'Educație pentru societate') {let average_score = parseFloat(average($(this).find('td:eq(1)').text().split(', ').map(Number)).toFixed(2)); if (average_score) {average_of_averages.push(average_score); $(this).append( $('<td>', {class: 't-Report-cell', html: average_score})); let $PlusButton = $('<a>', {href: '#', id: count, text: '+'}); $(this).append($('<td>', {class: 't-Report-cell'}).append($PlusButton.click(function() {editscorelist($PlusButton.attr('id'))})))}}
     });
-    $table.find('tbody').append($('<tr>').append($('<td>', {class: 't-Report-cell', headers: 'DISCIPLINA'}).append($('<span>', {style: 'color: skyblue; font-weight:bold;', text: 'A/A'}))).append($('<td>')).append($('<td>', {class: 't-Report-cell', text: parseFloat(average(average_of_averages)).toFixed(2)})));
+    $table.find('tbody').append($('<tr>').append($('<td>', {class: 't-Report-cell', headers: 'DISCIPLINA'}).append($('<span>', {style: 'color: skyblue; font-weight:bold;', text: 'A/A'}))).append($('<td>')).append($('<td>')).append($('<td>', {class: 't-Report-cell', text: parseFloat(average(average_of_averages)).toFixed(2)})));
 })();
