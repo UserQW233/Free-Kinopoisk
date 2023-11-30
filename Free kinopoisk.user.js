@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/cps
-// @version        2077v.1.4.3
+// @version        2077v.1.4.3/1
 // @source         https://github.com/ecXbe/cps
 // @supportURL     https://github.com/ecXbe/cps
 // @updateURL      https://github.com/ecXbe/cps/raw/main/Free%20kinopoisk.user.js
@@ -316,10 +316,11 @@ _________        ___.                                     __
                         $old.append($spin);
                         let check_load = setInterval(function() {
                             if (!$('.spinner').length || document.readyState === 'complete') {
+                                let $new_link; $old[0] == $old.parents().eq(2).find('a:eq(0)')[0] ? $new_link = 3 : $new_link = 2; $new_link = $old.parents().eq($new_link).find('a:eq(0)').attr('href').split('/');
                                 clearInterval(check_load);
                                 $spin.remove();
                                 setTimeout(function() {
-                                    $old.attr('href', `https://sspoisk.ru/${$old.attr('href').split('/')[1]}/${$old.attr('href').split('/')[2]}/`).find('*').css('filter', '').end().css('pointer-events', 'unset');
+                                    $old.attr('href', `https://sspoisk.ru/${$new_link[1]}/${$new_link[2]}/`).find('*').css('filter', '').end().css('pointer-events', 'unset');
                                 }, 10);
                             }
                         }, 50);
