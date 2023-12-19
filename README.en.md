@@ -7,12 +7,23 @@
 </p>
 
 <p align='center'>
-  <img src='https://img.shields.io/badge/readme-English-darkblue?style=for-the-badge'>
-  <img src='https://img.shields.io/badge/version-2077v.1.5-%2314b8b8?style=for-the-badge'>
-  <img src='https://img.shields.io/badge/readme-Russian-darkred?style=for-the-badge'>
+  <a href='https://github.com/ecXbe/Free-Kinopoisk/blob/main/README.en.md'>
+    <img src='https://img.shields.io/badge/readme-English-darkblue?style=for-the-badge'>
+  </a>
+  <a href='https://github.com/ecXbe/Free-Kinopoisk/commits/main/Free%20kinopoisk.user.js'>
+    <img src='https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FecXbe%2FFree-Kinopoisk%2Fmain%2Fconfig.json&query=%24.version&style=for-the-badge&label=version&color=%2314b8b8
+'>
+  </a>
+  <a href='https://github.com/ecXbe/Free-Kinopoisk/blob/main/README.md'>
+    <img src='https://img.shields.io/badge/readme-Russian-darkred?style=for-the-badge'>
+  </a>
   <br>
-  <img src='https://img.shields.io/greasyfork/dt/461423?style=flat-square&label=Downloads&color=lightpink'>
-  <img src='https://img.shields.io/badge/Telegram-Channel-lightblue?style=flat-square&logo=telegram'>
+  <a href='https://greasyfork.org/ru/scripts/461423-free-kinopoisk'>
+    <img src='https://img.shields.io/greasyfork/dt/461423?style=flat-square&label=Downloads&color=lightpink'>
+  </a>
+  <a href='https://t.me/Free_kinopoisk_by_ezX'>
+    <img src='https://img.shields.io/badge/Telegram-Channel-lightblue?style=flat-square&logo=telegram'>
+  </a>
 </p>
 
 ---
