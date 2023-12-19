@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name           Free kinopoisk
-// @namespace      https://github.com/ecXbe/cps
-// @version        2077v.1.4.3/1
-// @source         https://github.com/ecXbe/cps
-// @supportURL     https://github.com/ecXbe/cps
-// @updateURL      https://github.com/ecXbe/cps/raw/main/Free%20kinopoisk.user.js
-// @downloadURL    https://github.com/ecXbe/cps/raw/main/Free%20kinopoisk.user.js
+// @namespace      https://github.com/ecXbe/Free-Kinopoisk
+// @version        2077v.1.5
+// @source         https://github.com/ecXbe/Free-Kinopoisk
+// @supportURL     https://github.com/ecXbe/Free-Kinopoisk
+// @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
+// @downloadURL    https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
@@ -17,8 +17,11 @@
 // @include        /^https:\/\/api\..*\.ws\/.*$/
 // @include        /^https:\/\/.*kodik\..*$/
 // @connect        www.kinopoisk.ru
+// @connect        api.github.com
+// @connect        raw.githubusercontent.com
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant          GM_xmlhttpRequest
+// @grant          GM_info
 // @run-at         document-body
 // @compatible	   Chrome
 // @compatible	   Edge
@@ -51,6 +54,16 @@ _________        ___.                                     __
         let $head = $('head');
         if (!$head) return
         return $('<style>', {type: 'text/css', text: css}).appendTo($head)
+    }
+
+    function getPage(url, callback) {
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: url,
+            onload: function(response) {
+                callback(response.responseText);
+            }
+        });
     }
 
     const kinopoisk = function() {
@@ -105,6 +118,17 @@ _________        ___.                                     __
 
         $('<info>', {style: 'display: none'}).append(
             $('<div>', {style: 'max-width: 1000px; min-width: 300px; margin-left: auto; margin-right: auto;'}).append(
+                $('<pre_info>', {style: 'display: none; margin-bottom: 1.2rem; justify-content: center;'}).append(
+                    $('<div>', {class: 'pre_info_arrow', title: 'Прокрутите вверх для возвращения обратно'}).append(
+                        $('<div>', {class: 'half_arrow', style: 'transform: translateX(2.4px) rotate(-20deg)'})
+                    ).append(
+                        $('<div>', {class: 'half_arrow', style: 'transform: translateX(-2.4px) rotate(20deg)'})
+                    ).click(function() {
+                        $('ui').css('transform', '');
+                        $(this).css('pointer-events', 'none');
+                        setTimeout(() => $(this).css('pointer-events', ''), 50);
+                    })
+                )).append(
                 $('<div>', {style: 'background-color: #222a33; border-radius: 12px; box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.3); padding: 20px 0 5px 15px;', class: 'information'})
             )
         ).appendTo($('body'));
@@ -112,7 +136,7 @@ _________        ___.                                     __
         $('title').text(`Кинопоиск.`);
         $('body').hide()
 
-        document.addEventListener("DOMContentLoaded", function() {
+        $(function() {
 
             $('div[style="position: fixed !important; height: 305px !important; width: 480px !important; top: 0px !important; left: auto !important; z-index: 2147483647; right: 0px !important; margin: 0px !important;"]').hide().remove()
 
@@ -127,8 +151,8 @@ _________        ___.                                     __
             $Video_pleer.css('display', 'none'); $Video_pleer.addClass('VideoPleer');
             $('body').append('<div class="spinner"></div>');
             addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);width: 50px;height: 50px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
-            addGlobalStyle(`.header_container {background-color: #1b2229; border-radius: 48px; margin-right: 5px; width: 46px; transition: all 0.5s ease-in-out;} .header_homepage {filter: invert(45%); position: absolute; transform: translateY(32%) translateX(-35px); opacity: 0; transition: all 0.5s ease-in-out; user-select: none;} .header_homepage:hover {filter: invert(30%)} .header_container:hover {width: 80px; transition: all 0.5s ease-in-out;} .header_container:hover .header_homepage {opacity: 1; transform: translateY(32%) translateX(-2px); transition: transform 0.5s ease-in-out, opacity .5s ease-in-out;} iframe.kinobox__iframe, div.kinobox__loaderWrapper {border-radius: 10px;} body {user-select: none;} .kinobox {border-radius: 10px; box-shadow: -2px 2px 6px 2px rgba(0, 0, 0, 0.3);} .kinobox__menu--list {border-radius: 6px 0 0 6px; transition: all .2s ease-in-out; outline: none; box-shadow: -1px -1px 6px 1px rgba(0, 0, 0, 0.3);} .kinobox__menuItem {color: white; background: #41536b !important;} .kinobox__menuItem:hover {background: #7ba2d1 !important;} .kinobox__menuItem--active {background: #5d7ea5 !important;}`)
-            addGlobalStyle(`.watch_mode {position: relative; width: 20px; height: 20px;} .watch_mode:hover {filter: invert(30%) !important;} .watch_mode:before {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/top-arrow.025c12cf.svg); top: 1px; right: 0} .watch_mode:after {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/bottom-arrow.b4fcf81a.svg); top: 10px; left: 3px;} .watch_mode:before, .watch_mode:after {position: absolute; width: 8px; height: 8px; content: ""; background-repeat: no-repeat; background-position: 50%; background-size: contain;} .watch_active:before, .watch_active:after {transform: rotate(180deg)} .poster.watch, .kinobox__menu.watch {display: none !important} .united_el.watch {max-width: 97.56% !important} .VideoPleer.watch {justify-content: center} .pre_info_arrow.watch {cursor: none !important; pointer-events: none} .half_arrow.first_half.watch {transform: translateX(2.4px) rotate(0deg) !important} .half_arrow.second_half.watch {transform: translateX(-2.4px) rotate(0deg) !important} .pre_info_arrow {display: flex; align-items: center; justify-content: center; cursor: pointer; width: 24px; height: 24px} .half_arrow {background-color: #171c21; width: 12px; height: 4px; border-radius: 100px; transition: } .pre_info_arrow:hover {.half_arrow {background-color: #aaa !important}}`);
+            addGlobalStyle(`.header_container {background-color: #1b2229; border-radius: 48px; margin-right: 5px; width: 47px; transition: all 0.5s ease-in-out;} .header_homepage {filter: invert(45%); position: absolute; transform: translateY(32%) translateX(-35px); opacity: 0; transition: all 0.5s ease-in-out; user-select: none;} .header_homepage:hover {filter: invert(30%)} .header_container:hover {width: 80px; transition: all 0.5s ease-in-out;} .header_container:hover .header_homepage {opacity: 1; transform: translateY(32%) translateX(-2px); transition: transform 0.5s ease-in-out, opacity .5s ease-in-out;} iframe.kinobox__iframe, div.kinobox__loaderWrapper {border-radius: 10px;} body {user-select: none;} .kinobox {border-radius: 10px; box-shadow: -2px 2px 6px 2px rgba(0, 0, 0, 0.3);} .kinobox__menu--list {border-radius: 6px 0 0 6px; transition: all .2s ease-in-out; outline: none; box-shadow: -1px -1px 6px 1px rgba(0, 0, 0, 0.3);} .kinobox__menuItem {color: white; background: #41536b !important;} .kinobox__menuItem:hover {background: #7ba2d1 !important;} .kinobox__menuItem--active {background: #5d7ea5 !important;}`)
+            addGlobalStyle(`.watch_mode {position: relative; width: 20px; height: 20px;} .watch_mode:hover {filter: invert(30%) !important;} .watch_mode:before {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/top-arrow.025c12cf.svg); top: 1px; right: 0} .watch_mode:after {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/bottom-arrow.b4fcf81a.svg); top: 10px; left: 3px;} .watch_mode:before, .watch_mode:after {position: absolute; width: 8px; height: 8px; content: ""; background-repeat: no-repeat; background-position: 50%; background-size: contain;} .watch_active:before, .watch_active:after {transform: rotate(180deg)} .poster.watch, .kinobox__menu.watch {display: none !important} .united_el.watch {max-width: 97.56% !important} .VideoPleer.watch {justify-content: center} .pre_info_arrow:not(:hover) {.half_arrow.first_half.watch {background-color: #1e2328 !important; transform: translateX(2.4px) rotate(0deg) !important} .half_arrow.second_half.watch {background-color: #1e2328 !important; transform: translateX(-2.4px) rotate(0deg) !important}} .pre_info_arrow {display: flex; align-items: center; justify-content: center; cursor: pointer; width: 24px; height: 24px} .half_arrow {background-color: #171c21; width: 12px; height: 4px; border-radius: 100px; transition: transform .2s ease-in-out;} .pre_info_arrow:hover {.half_arrow {background-color: #aaa !important}}`);
             GM_xmlhttpRequest({
                 method: "GET",
                 url: 'https://www.kinopoisk.ru'+window.location.pathname,
@@ -175,9 +199,19 @@ _________        ___.                                     __
                             ).append(
                                 $('<div>', {class: 'half_arrow second_half', style: 'transform: translateX(-2.4px) rotate(-20deg)'})
                             ).click(function() {
-                                $('ui').css('transform', 'translateY(-65.8%)')
-                                $(this).css('pointer-events', 'none');
-                                setTimeout(() => $(this).css('pointer-events', ''), 50);
+                                if ($('.watch').length) {
+                                    $('i.watch_mode').removeClass('watch_active');
+                                    $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
+                                    setTimeout(function() {
+                                        $('ui').css('transform', 'translateY(-65.8%)');
+                                        $(this).css('pointer-events', 'none');
+                                        setTimeout(() => $(this).css('pointer-events', ''), 50);
+                                    }, 250);
+                                } else {
+                                    $('ui').css('transform', 'translateY(-65.8%)');
+                                    $(this).css('pointer-events', 'none');
+                                    setTimeout(() => $(this).css('pointer-events', ''), 50);
+                                }
                             })
                         )
                     ).appendTo($('body'))
@@ -188,7 +222,7 @@ _________        ___.                                     __
                         )
                     ).append(
                         $('<div>', {style: 'display: flex; position: absolute; align-self: end; bottom: 0; right: 0; margin: 0 16px 10px 0;'}).append(
-                            $('<i>', {class: 'watch_mode', style: 'filter: invert(45%);'}).click(function() {$(this).toggleClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').toggleClass('watch');})
+                            $('<i>', {class: 'watch_mode', style: 'filter: invert(45%);'}).click(function() {if ($('ui').css('transform') === 'none') {$(this).toggleClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').toggleClass('watch');}})
                         )
                     );
                     $(document).keyup(function(e) {
@@ -269,12 +303,124 @@ _________        ___.                                     __
                     $Video_pleer.css('display', 'flex');$('info').css('display', 'flex');$('pre_info').css('display', 'flex');
 
                     window.addEventListener("wheel", function(event) {
-                        if (event.deltaY > 0 && !$('.watch').length) {
-                            $('ui').css('transform', 'translateY(-65.8%)')
+                        if (event.deltaY > 0 && !$('update').length) {
+                            if ($('.watch').length) $('i.watch_mode').removeClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
+                            setTimeout(() => {$('ui').css('transform', 'translateY(-65.8%)')});
                         } else if (event.deltaY < 0) {
                             $('ui').css('transform', '');
                         }
                     });
+
+                    const snow = function() {
+                        let now = new Date();
+                        let month = now.getMonth();
+                        let date = now.getDate();
+                        if (!((month === 11 && date >= 1) || (month === 0 && date <= 10))) return;
+                        setTimeout(function() {
+                            addGlobalStyle(`body {animation: winterColorChange 10s forwards;} @keyframes winterColorChange {0% {background-color: #2A3440;} 100% {background-color: #213349}`);
+
+                            let $crds = []; let $lftrght = []; let $x_mv = []; let $snowflake = [];
+                            let $h_site = $('body').height(); let $w_site = $(document).width();
+                            let $snowcolor = ["#b9dff5", "#7fc7ff", "#7fb1ff", "#7fc7ff", "#b9dff5"];
+                            $('body').prepend($('<snowfall>'))
+
+                            for (let i=0; i<=30; i++) {
+                                $crds[i] = 0;
+                                $lftrght[i] = Math.random()*15;
+                                $x_mv[i] = 0.03 + Math.random()/10;
+
+                                $snowflake[i] = {};
+                                $snowflake[i].size = Math.floor(Math.random() * (40 - 15 + 1)) + 15;
+                                $snowflake[i].fall = $snowflake[i].size * 0.9 / 5;
+                                $snowflake[i].posx = Math.floor(Math.random() * ($w_site-$snowflake[i].size));
+                                $snowflake[i].posy = Math.floor(Math.random() * (2*$h_site-$h_site-2*$snowflake[i].size));
+
+                                $('snowfall').append($('<span>', {text: '❄', id: `s${i}`, style: `position: absolute; font-family: Times; font-size: ${$snowflake[i].size}px; color: ${$snowcolor[Math.floor(Math.random() * $snowcolor.length)]}; z-index: 0; left: ${$snowflake[i].posx}px; top: ${$snowflake[i].posy}px`}));
+                            }
+
+                            setInterval(function() {
+                                for (let i=0; i<=30; i++) {
+                                    $crds[i] += $x_mv[i];
+                                    $('.watch').length ? $snowflake[i].posy += $snowflake[i].size * 0.1 / 5 : $snowflake[i].posy += $snowflake[i].fall;
+
+                                    $(`#s${i}`).css({'left': `${$snowflake[i].posx + $lftrght[i] * Math.sin($crds[i])}px`, 'top': `${$snowflake[i].posy}px`});
+
+                                    if ($snowflake[i].posy >= $h_site + 2 * $snowflake[i].size || parseInt($(`#s${i}`)) > ($w_site - 3 * $lftrght[i])){
+                                        $snowflake[i].posx = Math.floor(Math.random() * $w_site - $snowflake[i].size)
+                                        $snowflake[i].posy = 0
+                                    }
+                                }
+                            }, 50)
+                        }, 2000)
+                    }
+                    const update = function() {
+                        getPage('https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/main/config.json', function(response) {
+
+                            let $current_version = GM_info.script.version;
+                            let $check_version = JSON.parse(response).version;
+
+                            if ($current_version === $check_version) return
+
+                            let $v1 = $current_version.split(/[./]/).map(Number).filter(s => !isNaN(s));
+                            let $v2 = $check_version.split(/[./]/).map(Number).filter(s => !isNaN(s));
+
+                            let $n1,$n2;
+                            for (let i = 0; i < Math.max($v1.length, $v2.length); i++) {
+                                $n1 = $v1[i] || 0;
+                                $n2 = $v2[i] || 0;
+
+                                if ($n1 > $n2) {return} else if ($n1 < $n2) {break}
+                            }
+
+
+                            addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100;} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px} .innovation {margin: 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
+
+                            $('ui').prepend($('<update>', {style: 'display: none'}).append(
+                                $('<div>', {style: 'height: 100vh; width: 100vw; justify-content: center; align-items: center; display: flex;'}).append(
+                                    $('<div>', {class: 'update_menu'}).append(
+                                        $('<h2>', {class: 'update_head', style: 'margin-left: 12px', text: 'Доступно обновление'})
+                                    ).append(
+                                        $('<div>', {style: 'margin-left: 20px'}).append(
+                                            $('<span>', {text: $check_version, class: 'version_update'})
+                                        ).append(
+                                            $('<div>', {class: 'update_list'})
+                                        )
+                                    ).append(
+                                        $('<div>', {class: 'update_buttons'}).append(
+                                            $('<span>', {class: 'update_later', text: 'Не сейчас'}).click(function() {$('update').remove(); $('section, info').css('pointer-events', '');})
+                                        ).append(
+                                            $('<button>', {class: 'update_now', text: 'Обновить'}).click(function() {
+                                                window.location.href = 'https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js'
+                                                setTimeout(function() {
+                                                    $('.update_buttons, .version_update').remove();
+                                                    $('.update_head').text('Вы обновились!');
+                                                    $('.update_list').empty().append($('<p>', {class: 'innovation', text: 'Чтобы изменения вступили в силу, перезагрузите страницу'}));
+                                                }, 1000);
+                                            })
+                                        )
+                                    )
+                                )
+                            ));
+
+                            getPage('https://api.github.com/repos/ecXbe/cps/commits?path=Free%20kinopoisk.user.js', function(response) {
+
+                                let $lastCommit = JSON.parse(response)[0].commit.message.split('\n\n')[1].split('\r\n');
+
+                                for (let i = 0; i < $lastCommit.length; i++) {
+                                    if ($lastCommit[i] === '--RU--') {
+                                        $('.update_list').append($('<span>', {class: 'highlighting'}));
+                                    } else {
+                                        $('.update_list').append($('<p>', {text: $lastCommit[i], class:  'innovation'}))
+                                    }
+                                }
+
+                                $('update').css('display', '');
+                                $('section, info').css('pointer-events', 'none');
+                            });
+                        });
+                    }
+                    snow();
+                    update();
                 },
                 onerror: function() {
                     window.location.reload();
@@ -334,7 +480,7 @@ _________        ___.                                     __
         $('title').text(`Кинопоиск.`);
         watching();
     } else {
-        const blockedDomains = ["aj1907", "4251.tech", "spylees", "res81", "res45", "xcec", "vidalak", "cdn-rtb", "kimberlite", "itraff", "pub-eu", "adlook", "ad.moe.video", "playmatic", "playjusting", "adpod", "079301eaff0975107716716fd1cb0dcd", "snsv", "imasdk", "utraff", "yandex.ru/ads", "qvol", "onetouch8", "laimroll", "buzzoola", "trafficbass"];
+        const blockedDomains = ["aj1907", "4251.tech", "spylees", "res81", "res45", "xcec", "vidalak", "cdn-rtb", "kimberlite", "itraff", "pub-eu", "adlook", "ad.moe.video", "playmatic", "playjusting", "adpod", "079301eaff0975107716716fd1cb0dcd", "snsv", "imasdk", "utraff", "yandex.ru/ads", "yandex.ru/metrica", "qvol", "onetouch8", "laimroll", "buzzoola", "trafficbass", "adstreamer", "flyroll", "moviead55"];
 
         const originalOpen = XMLHttpRequest.prototype.open;
         XMLHttpRequest.prototype.open = function (method, url) {
