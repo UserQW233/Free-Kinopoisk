@@ -380,7 +380,7 @@ _________        ___.                                     __
                                     $('<div>', {class: 'update_menu'}).append(
                                         $('<h2>', {class: 'update_head', style: 'margin-left: 12px', text: 'Доступно обновление'})
                                     ).append(
-                                        $('<div>', {style: 'margin-left: 20px'}).append(
+                                        $('<div>', {style: 'margin: 0 5px 0 20px'}).append(
                                             $('<span>', {text: $check_version, class: 'version_update'})
                                         ).append(
                                             $('<div>', {class: 'update_list'})
@@ -402,9 +402,9 @@ _________        ___.                                     __
                                 )
                             ));
 
-                            getPage('https://api.github.com/repos/ecXbe/cps/commits?path=Free%20kinopoisk.user.js', function(response) {
+                            getPage('https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=Free%20kinopoisk.user.js', function(response) {
 
-                                let $lastCommit = JSON.parse(response)[0].commit.message.split('\n\n')[1].split('\r\n');
+                                let $lastCommit = JSON.parse(response)[0].commit.message.split('\n\n')[1].split(/\r?\n/);
 
                                 for (let i = 0; i < $lastCommit.length; i++) {
                                     if ($lastCommit[i] === '--RU--') {
