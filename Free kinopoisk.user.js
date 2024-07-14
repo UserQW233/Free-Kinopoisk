@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.5
+// @version        2077v.1.5.0/1
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
@@ -87,24 +87,20 @@ _________        ___.                                     __
                     if (!$('.spinner').length || document.readyState === 'complete') {
                         $spin.remove();
                         setTimeout(function() {
-                            let $ConButton = $oldButton.parent()
-                            $oldButton.remove();
-                            $ConButton.append($('<button>', {html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>', class: $oldButton.attr('class')}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`;}))
-
+                            $('button.kinopoisk-watch-online-button').html('<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>').end().click(function() {$(this).off(); const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`;});
                             clearInterval(check_load);
                         }, 10);
                     }
                 }, 50);
             } else {
                 let $spin = $('<div>', {class: 'spinner', style: 'margin-top: 2px'});
-                let $ConButton = $('div.styles_buttonsContainer__HREZO').length ? $('div.styles_buttonsContainer__HREZO') : $('div.styles_buttonsContainer__r_AHo');
 
-                let $btnLoad = $('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT style_buttonSize52__b5OBe style_buttonPrimary__ndPAb style_buttonLight____6ma style_withIconLeft___Myt9', style: 'background: rgba(0,0,0,.10) !important; pointer-events: none;', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f" style="filter: blur(5px)"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f" style="filter: blur(5px)">Смотреть</span>'}).append($spin)).prependTo($ConButton);
+                let $btnLoad = $('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT style_buttonSize52__b5OBe style_buttonPrimary__ndPAb style_buttonLight____6ma style_withIconLeft___Myt9', style: 'background: rgba(0,0,0,.10) !important; pointer-events: none;', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f" style="filter: blur(5px)"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f" style="filter: blur(5px)">Смотреть</span>'}).append($spin)).prependTo($('div.styles_buttonsContainer__HREZO').length ? $('div.styles_buttonsContainer__HREZO') : $('div.styles_buttonsContainer__r_AHo'));
 
                 let checkLoad = setInterval(function() {
                     if (!$('.spinner').length || document.readyState === 'complete') {
-                        if (document.readyState === 'complete') $btnLoad.remove();
-                        $ConButton.prepend($('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT kinopoisk-watch-online-button styles_watchOnlineButton__ruFtI style_buttonSize52__b5OBe style_buttonPlus__TjQez style_buttonLight____6ma style_withIconLeft___Myt9', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>'}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`})));
+                        $btnLoad.remove();
+                        ($('div.styles_buttonsContainer__HREZO').length ? $('div.styles_buttonsContainer__HREZO') : $('div.styles_buttonsContainer__r_AHo')).prepend($('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT kinopoisk-watch-online-button styles_watchOnlineButton__ruFtI style_buttonSize52__b5OBe style_buttonPlus__TjQez style_buttonLight____6ma style_withIconLeft___Myt9', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>'}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`})));
                         clearInterval(checkLoad);
                     }
                 }, 50);

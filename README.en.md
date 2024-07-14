@@ -37,7 +37,7 @@
    
 - #### Install the script
   - GitHub
-    <a href='https://github.com/ecXbe/cps/raw/main/Free%20kinopoisk.user.js'>
+    <a href='https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js'>
       <img src='https://img.shields.io/badge/Install-darkblue'>
     </a>
     
