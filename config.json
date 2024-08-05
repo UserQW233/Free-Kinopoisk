@@ -1,3 +1,6 @@
 {
-    "version": "2077v.1.5.0/1"
+    "version": {
+        "stable": "2077v.1.6",
+        "newway": "2077v.1.6.newway"
+    }
 }

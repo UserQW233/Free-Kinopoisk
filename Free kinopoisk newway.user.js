@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6
+// @version        2077v.1.6.newway
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
-// @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
-// @downloadURL    https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
+// @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
+// @downloadURL    https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
@@ -45,6 +45,27 @@ _________        ___.                                     __
                                            /_______  /|__|  \___  >\___  >__|  /____  >
                                                    \/           \/     \/           \/
 */
+
+
+
+/*
+ _____                                                                _____
+( ___ )                                                              ( ___ )
+ |   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|   |
+ |   |                                                                |   |
+ |   |                                                                |   |
+ |   |                    __      __   __      __                     |   |
+ |   |        ____   ____/  \    /  \ /  \    /  \_____  ___.__.      |   |
+ |   |       /    \_/ __ \   \/\/   / \   \/\/   /\__  \<   |  |      |   |
+ |   |      |   |  \  ___/\        /   \        /  / __ \\___  |      |   |
+ |   |      |___|  /\___  >\__/\  /     \__/\  /  (____  / ____|      |   |
+ |   |           \/     \/      \/           \/        \/\/           |   |
+ |   |                                                                |   |
+ |   |                                                                |   |
+ |___|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|___|
+(_____)                                                              (_____)
+*/
+
 
 (function() {
     'use strict';
@@ -195,7 +216,7 @@ _________        ___.                                     __
                             onload: function(response) {
 
                                 let $current_version = GM_info.script.version;
-                                let $last_version = JSON.parse(response.responseText).version.stable;
+                                let $last_version = JSON.parse(response.responseText).version.newway;
 
                                 let $v1 = $current_version.split(/[./]/).map(Number).filter(s => !isNaN(s));
                                 let $v2 = $last_version.split(/[./]/).map(Number).filter(s => !isNaN(s));
@@ -228,7 +249,7 @@ _________        ___.                                     __
                                                 $('<span>', {class: 'update_later', text: 'Не сейчас'}).click(function() {$('update').remove(); $('section, info').css('pointer-events', '');})
                                             ).append(
                                                 $('<button>', {class: 'update_now', text: 'Обновить'}).click(function() {
-                                                    window.location.href = 'https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js'
+                                                    window.location.href = 'https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js'
                                                     setTimeout(function() {
                                                         $('.update_buttons, .version_update').remove();
                                                         $('.update_head').text('Вы обновились!');
@@ -242,7 +263,7 @@ _________        ___.                                     __
 
                                 GM_xmlhttpRequest({
                                     method: "GET",
-                                    url: 'https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=Free%20kinopoisk.user.js',
+                                    url: 'https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=Free%20kinopoisk%20newway.user.js',
                                     onload: function(response) {
 
                                         let $lastCommit = JSON.parse(response.responseText)[0].commit.message.split('\n\n')[1].split(/\r?\n/);
