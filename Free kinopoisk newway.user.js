@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.newway
+// @version        2077v.1.6.1.newway
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
