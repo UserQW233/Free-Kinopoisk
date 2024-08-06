@@ -14,7 +14,8 @@
 <center>
   <p align='center'>
     <a href='https://github.com/ecXbe/Free-Kinopoisk/blob/main/README.en.md'><img src='https://img.shields.io/badge/readme-English-darkblue?style=for-the-badge'></a>
-    <a href='https://github.com/ecXbe/Free-Kinopoisk/commits/main/Free%20kinopoisk.user.js'><img src="https://img.shields.io/badge/dynamic/json?query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2FecXbe%2FFree-Kinopoisk%2Fmain%2Fconfig.json&label=version&color=%2314b8b8&style=for-the-badge"></a>
+    <a href='https://github.com/ecXbe/Free-Kinopoisk/commits/main/Free%20kinopoisk.user.js'><img src="https://img.shields.io/badge/dynamic/json?query=version.stable&url=https%3A%2F%2Fraw.githubusercontent.com%2FecXbe%2FFree-Kinopoisk%2Fmain%2Fconfig.json&label=stable&color=%2314b8b8&style=for-the-badge"></a>
+    <a href='https://github.com/ecXbe/Free-Kinopoisk/commits/main/Free%20kinopoisk%20newway.user.js'><img src="https://img.shields.io/badge/dynamic/json?query=version.newway&url=https%3A%2F%2Fraw.githubusercontent.com%2FecXbe%2FFree-Kinopoisk%2Fmain%2Fconfig.json&label=beta&color=white&style=for-the-badge"></a>
     <a href='https://github.com/ecXbe/Free-Kinopoisk/blob/main/README.md'><img src='https://img.shields.io/badge/readme-Russian-darkred?style=for-the-badge'></a>
     <br>
     <a href='https://greasyfork.org/ru/scripts/461423-free-kinopoisk'><img src='https://img.shields.io/greasyfork/dt/461423?style=flat-square&label=Downloads&color=lightpink'></a>
@@ -44,14 +45,15 @@
     #### Стабильная версия
     ---
     | **GitHub** | <a href='https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js'><img src='https://img.shields.io/badge/%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C-darkblue'></a> |
-    |---|---|
+    | --- | --- |
     | **Greasy Fork** | <a href='https://greasyfork.org/ru/scripts/461423-free-kinopoisk'><img src='https://img.shields.io/badge/%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C-blue'></a> |
 
     #### Бета версия (neWWay)
     ---
     **Free Kinopoisk WW** — это предварительная версия обычного **Free Kinopoisk** и является бета-версией, предназначенной для тестирования новых возможностей и улучшений. Он рекомендуется для пользователей, которые хотят опробовать самые свежие функции. Однако, учитывайте, что **Free Kinopoisk WW** может содержать ошибки и нестабильности, которые будут исправлены в следующих обновлениях.
+
     | **Free Kinopoisk WW** | <a href='https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js'><img src='https://img.shields.io/badge/%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C-white'></a> |
-    |---|---|
+    | --- | --- |
 
 ## 📷 Скриншоты
 
