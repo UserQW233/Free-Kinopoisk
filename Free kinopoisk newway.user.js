@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.1.newway
+// @version        2077v.1.6.2/1.newway
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
@@ -232,7 +232,7 @@ _________        ___.                                     __
                                 }
 
 
-                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; max-height: 95vh; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100; overflow-y: auto} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px; max-height: 75vh; overflow-y: auto} .innovation {margin: 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
+                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100;} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px} .innovation {margin: 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .version_highlighting {display: flex; position: relative; align-items: center; text-align: center; left: -12.5px;} .version_highlighting::before, .version_highlighting::after {content: ""; flex: 1; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 10px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
 
                                 $('ui').prepend($('<update>', {style: 'display: none'}).append(
                                     $('<div>', {style: 'height: 100vh; width: 100vw; justify-content: center; align-items: center; display: flex;'}).append(
@@ -266,14 +266,24 @@ _________        ___.                                     __
                                     url: 'https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=Free%20kinopoisk%20newway.user.js',
                                     onload: function(response) {
 
-                                        let $lastCommit = JSON.parse(response.responseText)[0].commit.message;
-                                        let $lines = $lastCommit.split('\n\n').slice(1).join('\n').split(/\r?\n/);
+                                        let $current_version = GM_info.script.version.replace(/[A-Za-z]/g, '').replace('2077', '').replace(/\s/g, '').replace(/^\.+|\.+$/g, '');
+                                        let $versions = JSON.parse(response.responseText).map(s => s.commit.message.split('\n\n')[0].replace(/[A-Za-z]/g, '').replace('2077', '').replace(/\s/g, '').replace(/^\.+|\.+$/g, ''));
+                                        for (let i in $versions) {
+                                            console.log(`${$current_version} / ${$versions[i]}`);
+                                            if ($current_version === $versions[i]) {
+                                                break;
+                                            } else if ($versions[i] !== $versions[i-1]) {
+                                                $('.update_list').append($('<span>', {class: 'version_highlighting', text: `v2077v.${$versions[i]}`}));
+                                                let $lastCommit = JSON.parse(response.responseText)[i].commit.message;
+                                                let $lines = $lastCommit.split('\n\n').slice(1).join('\n').split(/\r?\n/);
 
-                                        for (let i = 0; i < $lines.length; i++) {
-                                            if ($lines[i] === '--RU--') {
-                                                $('.update_list').append($('<span>', {class: 'highlighting'}));
-                                            } else {
-                                                $('.update_list').append($('<p>', {text: $lines[i], class: 'innovation'}))
+                                                for (let i = 0; i < $lines.length; i++) {
+                                                    if ($lines[i] === '--RU--') {
+                                                        $('.update_list').append($('<span>', {class: 'highlighting'}));
+                                                    } else {
+                                                        $('.update_list').append($('<p>', {text: $lines[i], class: 'innovation'}))
+                                                    }
+                                                }
                                             }
                                         }
 
