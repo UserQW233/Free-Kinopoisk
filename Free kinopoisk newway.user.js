@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.2/1.newway
+// @version        2077v.1.6.2/2.newway
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
@@ -151,6 +151,12 @@ _________        ___.                                     __
             GM_xmlhttpRequest({
                 method: "GET",
                 url: $parse_link,
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+                    "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "Connection": "keep-alive"
+                },
                 onload: function(response) {
                     if (response.finalUrl !== $parse_link && response.finalUrl.match(/\/(\d+)\//)[0] !== $parse_link.match(/\/(\d+)\//)[0]) return loading_handler();
 
@@ -215,24 +221,29 @@ _________        ___.                                     __
                             url: 'https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/main/config.json',
                             onload: function(response) {
 
+                                function update_able($current_version, $last_version) {
+                                    let $v1 = $current_version.split(/[./-]/).map(Number).filter(s => !isNaN(s));
+                                    let $v2 = $last_version.split(/[./-]/).map(Number).filter(s => !isNaN(s));
+
+                                    if (JSON.stringify($v1) === JSON.stringify($v2)) return 0;
+
+                                    let $n1,$n2;
+                                    for (let i = 0; i < Math.max($v1.length, $v2.length); i++) {
+                                        $n1 = $v1[i] || 0;
+                                        $n2 = $v2[i] || 0;
+
+                                        if ($n1 > $n2) {return 0} else if ($n1 < $n2) {break}
+                                    }
+                                    return 1;
+                                }
+
                                 let $current_version = GM_info.script.version;
                                 let $last_version = JSON.parse(response.responseText).version.newway;
 
-                                let $v1 = $current_version.split(/[./]/).map(Number).filter(s => !isNaN(s));
-                                let $v2 = $last_version.split(/[./]/).map(Number).filter(s => !isNaN(s));
-
-                                if (JSON.stringify($v1) === JSON.stringify($v2)) return
-
-                                let $n1,$n2;
-                                for (let i = 0; i < Math.max($v1.length, $v2.length); i++) {
-                                    $n1 = $v1[i] || 0;
-                                    $n2 = $v2[i] || 0;
-
-                                    if ($n1 > $n2) {return} else if ($n1 < $n2) {break}
-                                }
+                                if (update_able($current_version, $last_version) === 0) return;
 
 
-                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100;} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px} .innovation {margin: 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .version_highlighting {display: flex; position: relative; align-items: center; text-align: center; left: -12.5px;} .version_highlighting::before, .version_highlighting::after {content: ""; flex: 1; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 10px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
+                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; max-height: 95vh; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100; overflow-y: auto} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px; max-height: 75vh; overflow-y: auto} .innovation {margin: 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .version_highlighting {display: flex; position: relative; align-items: center; text-align: center; left: -12.5px;} .version_highlighting::before, .version_highlighting::after {content: ""; flex: 1; border-bottom: 1px solid hsla(0, 0%, 50%, .33);} .version_highlighting::before {margin: 0 10px;} .version_highlighting::after {margin: 0 12px 0 10px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
 
                                 $('ui').prepend($('<update>', {style: 'display: none'}).append(
                                     $('<div>', {style: 'height: 100vh; width: 100vw; justify-content: center; align-items: center; display: flex;'}).append(
@@ -266,14 +277,15 @@ _________        ___.                                     __
                                     url: 'https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=Free%20kinopoisk%20newway.user.js',
                                     onload: function(response) {
 
-                                        let $current_version = GM_info.script.version.replace(/[A-Za-z]/g, '').replace('2077', '').replace(/\s/g, '').replace(/^\.+|\.+$/g, '');
-                                        let $versions = JSON.parse(response.responseText).map(s => s.commit.message.split('\n\n')[0].replace(/[A-Za-z]/g, '').replace('2077', '').replace(/\s/g, '').replace(/^\.+|\.+$/g, ''));
+                                        let $current_version = GM_info.script.version;
+                                        let $versions = JSON.parse(response.responseText).map(s => s.commit.message.split('\n\n')[0].match(/v2077v(\.\d+)+[^; ]*/)[0]);
                                         for (let i in $versions) {
                                             console.log(`${$current_version} / ${$versions[i]}`);
-                                            if ($current_version === $versions[i]) {
+                                            if (update_able($current_version, $versions[i]) === 0) {
+                                                if (i == 1) {$('span.version_highlighting').remove();}
                                                 break;
                                             } else if ($versions[i] !== $versions[i-1]) {
-                                                $('.update_list').append($('<span>', {class: 'version_highlighting', text: `v2077v.${$versions[i]}`}));
+                                                $('.update_list').append($('<span>', {class: 'version_highlighting', text: $versions[i]}));
                                                 let $lastCommit = JSON.parse(response.responseText)[i].commit.message;
                                                 let $lines = $lastCommit.split('\n\n').slice(1).join('\n').split(/\r?\n/);
 
@@ -533,6 +545,12 @@ _________        ___.                                     __
                             }
                         }, 50);
                     });
+
+                    $('li[role="listitem"]:not(.processed)').each(function() {
+                        let $item = $(this).find('a:eq(0)');
+                        $item.attr('href', `https://kinopoisk.ru/film/${$item.attr('id').replace(/[^0-9]/g, '')}`);
+                        return $(this).addClass('processed');
+                    })
                 });
             });
         } else {
