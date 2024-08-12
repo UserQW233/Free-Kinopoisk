@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.2/3.newway
+// @version        2077v.1.6.2/4.newway
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
@@ -23,7 +23,7 @@
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant          GM_xmlhttpRequest
 // @grant          GM_info
-// @run-at         document-body
+// @run-at         document-start
 // @compatible	   Chrome
 // @compatible	   Edge
 // @compatible	   Firefox
@@ -123,14 +123,21 @@ _________        ___.                                     __
     };
 
     const watching = function() {
+
+        $('body').hide();
+        $('title').text(`Кинопоиск.`);
+
         addGlobalStyle(`body {animation: colorChange .75s;} @keyframes colorChange {0% {background-color: #1E1E1E;} 100% {background-color: #2A3440;}} section {transform: translateY(5.6vh); min-height: 550px;} info {display: block; margin-top: 90vh;} ui {transition: transform 2s ease-in-out; display: block;} .star {margin: 25px 2px; height: 0; width: 0; position: relative; border-right: 17.5px solid transparent; border-bottom: 12.25px solid #979797; border-left: 17.5px solid transparent; transform: rotate(35deg);} .star:before, .star:after {content: ""; height: 0; width: 0; position: absolute;} .star:before {top: -9.1px; left: -11.2px; border-bottom: 14px solid #979797; border-left: 5.25px solid transparent; border-right: 5.25px solid transparent; transform: rotate(-35deg);} .star:after {top: 0.7px; left: -18px; border-right: 17.5px solid transparent; border-bottom: 12.55px solid #979797; border-left: 17.5px solid transparent; transform: rotate(-70deg);} .active-star, .active-star:before, .active-star:after {border-bottom-color: #c6cbf1;} .head_some-info {display: flex; margin-bottom: 15px;} .title_some-info {width: 160px;} .title_some-info, .some-info {font-size: 0.83em; font-weight: bold; max-width: 500px;}`);
 
-        $('title').text(`Кинопоиск.`);
-        $('body').hide()
+        let deleteBanner = setInterval(function() {
+            if ($('div[style*="z-index: 2147483647"]').length) {
+                $('div[style*="z-index: 2147483647"]').hide().remove();
+                clearInterval(deleteBanner);
+            }
+        }, 50);
+        setTimeout(() => clearInterval(deleteBanner), 5000);
 
-        $(function() {
-
-            $('div[style="position: fixed !important; height: 305px !important; width: 480px !important; top: 0px !important; left: auto !important; z-index: 2147483647; right: 0px !important; margin: 0px !important;"]').hide().remove()
+        document.addEventListener('DOMContentLoaded', function() {
 
             $('div#TopAdMb:eq(0), div.topAdPad:eq(0), div#tgWrapper:eq(0)').hide().remove();
 
@@ -153,7 +160,7 @@ _________        ___.                                     __
                 url: $parse_link,
                 headers: {
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+                    "Accept": "text/html",
                     "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
                     "Connection": "keep-alive"
                 },
