@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.2/4.newway
+// @version        2077v.1.6.2/5.newway
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
@@ -23,7 +23,7 @@
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant          GM_xmlhttpRequest
 // @grant          GM_info
-// @run-at         document-start
+// @run-at         document-body
 // @compatible	   Chrome
 // @compatible	   Edge
 // @compatible	   Firefox
@@ -514,7 +514,7 @@ _________        ___.                                     __
     if (window.location.host === 'www.kinopoisk.ru') {
         addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
         document.addEventListener('DOMContentLoaded', function() {
-            $('body').on('mousedown', 'a[href]:not([href*="?"])', function() {
+            $('body').on('mousedown', 'a[href]:not([href*="?"]):not([target="_blank"])', function() {
                 $(this).off();
                 let url = $(this).attr('href');
                 window.location.href = url;
@@ -524,40 +524,44 @@ _________        ___.                                     __
                     $(this).attr('href', $(this).attr('href').replace(/\/watch\/.*/, ''));
                     $(this).addClass('processed');
                 });
+                $('li[role="listitem"]:not(.processed)').each(function() {
+                    let $item = $(this).find('a:eq(0)');
+                    let $type = $item.attr('id').includes("tvSeries") ? 'series' : $item.attr('id').includes("film") ? 'film' : '';
+                    $item.attr('href', `https://kinopoisk.ru/${$type}/${$item.attr('id').replace(/[^0-9]/g, '')}`);
+                    return $(this).addClass('processed');
+                })
             }, 200);
         });
         if (!window.location.pathname.includes('/film') && !window.location.pathname.includes('/series')) {
             document.addEventListener('DOMContentLoaded', function() {
                 setInterval(function() {
-                    $('a:contains("Смотреть"):not(.processed)').each(function() {
-                        let $spin = $('<div>', {class: 'spinner', style: `margin: 1px 0 0 ${($(this).outerWidth()-90.98)/4.668}px; width: ${$(this).outerHeight()/52*30}px; height: ${$(this).outerHeight()/52*30}px; border-width: ${Math.ceil($(this).outerHeight()/52*30/5)}px;`});
-                        let $old = $(this);
-                        $old.addClass('processed');
+                    $('a:not(.processed)').each(function() {
+                        if ($(this).text().trim() === "Смотреть") {
+                            let $spin = $('<div>', {class: 'spinner', style: `margin: 1px 0 0 ${($(this).outerWidth()-90.98)/4.668}px; width: ${$(this).outerHeight()/52*30}px; height: ${$(this).outerHeight()/52*30}px; border-width: ${Math.ceil($(this).outerHeight()/52*30/5)}px;`});
+                            let $old = $(this);
+                            $old.addClass('processed');
 
-                        $old.css('pointer-events', 'none');
-                        $old.contents().filter(function() {
-                            return this.nodeType === 3;
-                        }).wrap("<span></span>");
-                        $old.find('*').css('filter', 'blur(5px)');
+                            $old.css('pointer-events', 'none');
+                            $old.contents().filter(function() {
+                                return this.nodeType === 3;
+                            }).wrap("<span></span>");
+                            $old.find('*').css('filter', 'blur(5px)');
 
-                        $old.append($spin);
-                        let $check_load = setInterval(function() {
-                            if (!$('.spinner').length || document.readyState === 'complete') {
-                                let $new_link = $old.parents().eq(4).find('a:eq(0)').attr('href').split('/');
-                                clearInterval($check_load);
-                                $spin.remove();
-                                setTimeout(function() {
-                                    $old.attr('href', `https://sspoisk.ru/${$new_link[1]}/${$new_link[2]}/`).find('*').css('filter', '').end().css('pointer-events', 'unset');
-                                }, 10);
-                            }
-                        }, 50);
+                            $old.append($spin);
+                            let $check_load = setInterval(function() {
+                                if (!$('.spinner').length || document.readyState === 'complete') {
+                                    let $new_link = $old.parents().eq(4).find('a[href*="/film/"], a[href*="/series/"]').eq(0).attr('href').split('/');
+                                    let $index = $new_link.findIndex(part => part === 'film' || part === 'series');
+                                    console.log($new_link);
+                                    clearInterval($check_load);
+                                    $spin.remove();
+                                    setTimeout(function() {
+                                        $old.attr('href', `https://sspoisk.ru/${$new_link[$index]}/${$new_link[$index+1]}/`).find('*').css('filter', '').end().css('pointer-events', 'unset');
+                                    }, 10);
+                                }
+                            }, 50);
+                        }
                     });
-
-                    $('li[role="listitem"]:not(.processed)').each(function() {
-                        let $item = $(this).find('a:eq(0)');
-                        $item.attr('href', `https://kinopoisk.ru/film/${$item.attr('id').replace(/[^0-9]/g, '')}`);
-                        return $(this).addClass('processed');
-                    })
                 });
             });
         } else {
