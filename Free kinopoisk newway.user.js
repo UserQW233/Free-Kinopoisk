@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.2/5.newway
+// @version        2077v.1.6.2.newway
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
@@ -79,7 +79,7 @@ _________        ___.                                     __
 
     const kinopoisk = function() {
         addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);width: 30px;height: 30px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
-        document.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('load', function() {
             const $oldButton = $('button.kinopoisk-watch-online-button');
 
             if ($oldButton.length) {
@@ -129,13 +129,14 @@ _________        ___.                                     __
 
         addGlobalStyle(`body {animation: colorChange .75s;} @keyframes colorChange {0% {background-color: #1E1E1E;} 100% {background-color: #2A3440;}} section {transform: translateY(5.6vh); min-height: 550px;} info {display: block; margin-top: 90vh;} ui {transition: transform 2s ease-in-out; display: block;} .star {margin: 25px 2px; height: 0; width: 0; position: relative; border-right: 17.5px solid transparent; border-bottom: 12.25px solid #979797; border-left: 17.5px solid transparent; transform: rotate(35deg);} .star:before, .star:after {content: ""; height: 0; width: 0; position: absolute;} .star:before {top: -9.1px; left: -11.2px; border-bottom: 14px solid #979797; border-left: 5.25px solid transparent; border-right: 5.25px solid transparent; transform: rotate(-35deg);} .star:after {top: 0.7px; left: -18px; border-right: 17.5px solid transparent; border-bottom: 12.55px solid #979797; border-left: 17.5px solid transparent; transform: rotate(-70deg);} .active-star, .active-star:before, .active-star:after {border-bottom-color: #c6cbf1;} .head_some-info {display: flex; margin-bottom: 15px;} .title_some-info {width: 160px;} .title_some-info, .some-info {font-size: 0.83em; font-weight: bold; max-width: 500px;}`);
 
-        let deleteBanner = setInterval(function() {
-            if ($('div[style*="z-index: 2147483647"]').length) {
-                $('div[style*="z-index: 2147483647"]').hide().remove();
-                clearInterval(deleteBanner);
+        let $remove_ad = setInterval(function() {
+            let $ad = $('body').children('div:not([class])').first();
+            if ($ad.length) {
+                $ad.hide().remove();
+                clearInterval($remove_ad);
             }
-        }, 50);
-        setTimeout(() => clearInterval(deleteBanner), 5000);
+        }, 10);
+        setTimeout(() => clearInterval($remove_ad), 5000);
 
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -159,10 +160,19 @@ _________        ___.                                     __
                 method: "GET",
                 url: $parse_link,
                 headers: {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-                    "Accept": "text/html",
-                    "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-                    "Connection": "keep-alive"
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                    "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+                    "Connection": "keep-alive",
+                    "DNT": "1",
+                    "Host": "www.kinopoisk.ru",
+                    "Priority": "u=0, i",
+                    "Referer": "https://sso.kinopoisk.ru/",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-site",
+                    "Sec-Fetch-User": "?1",
+                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0"
                 },
                 onload: function(response) {
                     if (response.finalUrl !== $parse_link && response.finalUrl.match(/\/(\d+)\//)[0] !== $parse_link.match(/\/(\d+)\//)[0]) return loading_handler();
@@ -229,6 +239,8 @@ _________        ___.                                     __
                             onload: function(response) {
 
                                 function update_able($current_version, $last_version) {
+                                    if ($current_version.includes('/') && !$last_version.includes('/')) return 1;
+
                                     let $v1 = $current_version.split(/[./-]/).map(Number).filter(s => !isNaN(s));
                                     let $v2 = $last_version.split(/[./-]/).map(Number).filter(s => !isNaN(s));
 
@@ -250,7 +262,7 @@ _________        ___.                                     __
                                 if (update_able($current_version, $last_version) === 0) return;
 
 
-                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; max-height: 95vh; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100; overflow-y: auto} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px; max-height: 75vh; overflow-y: auto} .innovation {margin: 0.8em 20px 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .version_highlighting {display: flex; position: relative; align-items: center; text-align: center; left: -12.5px;} .version_highlighting::before, .version_highlighting::after {content: ""; flex: 1; border-bottom: 1px solid hsla(0, 0%, 50%, .33);} .version_highlighting::before {margin: 0 10px;} .version_highlighting::after {margin: 0 12px 0 10px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
+                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; max-height: 96vh; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100; overflow-y: auto} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px; max-height: 75vh; overflow-y: auto} .innovation {margin: 0.8em 20px 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .version_highlighting {display: flex; position: relative; align-items: center; text-align: center; left: -12.5px;} .version_highlighting::before, .version_highlighting::after {content: ""; flex: 1; border-bottom: 1px solid hsla(0, 0%, 50%, .33);} .version_highlighting::before {margin: 0 10px;} .version_highlighting::after {margin: 0 12px 0 10px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
 
                                 $('ui').prepend($('<update>', {style: 'display: none'}).append(
                                     $('<div>', {style: 'height: 100vh; width: 100vw; justify-content: center; align-items: center; display: flex;'}).append(
@@ -285,9 +297,11 @@ _________        ___.                                     __
                                     onload: function(response) {
 
                                         let $current_version = GM_info.script.version;
-                                        let $versions = JSON.parse(response.responseText).map(s => s.commit.message.split('\n\n')[0].match(/v2077v(\.\d+)+[^; ]*/)[0]);
+                                        let $versions = JSON.parse(response.responseText).map(s => {
+                                            let $commits = s.commit.message.split('\n\n')[0].match(/v2077v(\.\d+)+[^; ]*/);
+                                            return $commits ? $commits[0] : null;
+                                        }).filter(Boolean);
                                         for (let i in $versions) {
-                                            console.log(`${$current_version} / ${$versions[i]}`);
                                             if (update_able($current_version, $versions[i]) === 0) {
                                                 if (i == 1) {$('span.version_highlighting').remove();}
                                                 break;
@@ -552,7 +566,6 @@ _________        ___.                                     __
                                 if (!$('.spinner').length || document.readyState === 'complete') {
                                     let $new_link = $old.parents().eq(4).find('a[href*="/film/"], a[href*="/series/"]').eq(0).attr('href').split('/');
                                     let $index = $new_link.findIndex(part => part === 'film' || part === 'series');
-                                    console.log($new_link);
                                     clearInterval($check_load);
                                     $spin.remove();
                                     setTimeout(function() {

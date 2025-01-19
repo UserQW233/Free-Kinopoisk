@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.1
+// @version        2077v.1.6.2
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
@@ -58,7 +58,7 @@ _________        ___.                                     __
 
     const kinopoisk = function() {
         addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);width: 30px;height: 30px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
-        document.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('load', function() {
             const $oldButton = $('button.kinopoisk-watch-online-button');
 
             if ($oldButton.length) {
@@ -102,14 +102,22 @@ _________        ___.                                     __
     };
 
     const watching = function() {
+
+        $('body').hide();
+        $('title').text(`Кинопоиск.`);
+
         addGlobalStyle(`body {animation: colorChange .75s;} @keyframes colorChange {0% {background-color: #1E1E1E;} 100% {background-color: #2A3440;}} section {transform: translateY(5.6vh); min-height: 550px;} info {display: block; margin-top: 90vh;} ui {transition: transform 2s ease-in-out; display: block;} .star {margin: 25px 2px; height: 0; width: 0; position: relative; border-right: 17.5px solid transparent; border-bottom: 12.25px solid #979797; border-left: 17.5px solid transparent; transform: rotate(35deg);} .star:before, .star:after {content: ""; height: 0; width: 0; position: absolute;} .star:before {top: -9.1px; left: -11.2px; border-bottom: 14px solid #979797; border-left: 5.25px solid transparent; border-right: 5.25px solid transparent; transform: rotate(-35deg);} .star:after {top: 0.7px; left: -18px; border-right: 17.5px solid transparent; border-bottom: 12.55px solid #979797; border-left: 17.5px solid transparent; transform: rotate(-70deg);} .active-star, .active-star:before, .active-star:after {border-bottom-color: #c6cbf1;} .head_some-info {display: flex; margin-bottom: 15px;} .title_some-info {width: 160px;} .title_some-info, .some-info {font-size: 0.83em; font-weight: bold; max-width: 500px;}`);
 
-        $('title').text(`Кинопоиск.`);
-        $('body').hide()
+        let $remove_ad = setInterval(function() {
+            let $ad = $('body').children('div:not([class])').first();
+            if ($ad.length) {
+                $ad.hide().remove();
+                clearInterval($remove_ad);
+            }
+        }, 10);
+        setTimeout(() => clearInterval($remove_ad), 5000);
 
-        $(function() {
-
-            $('div[style="position: fixed !important; height: 305px !important; width: 480px !important; top: 0px !important; left: auto !important; z-index: 2147483647; right: 0px !important; margin: 0px !important;"]').hide().remove()
+        document.addEventListener('DOMContentLoaded', function() {
 
             $('div#TopAdMb:eq(0), div.topAdPad:eq(0), div#tgWrapper:eq(0)').hide().remove();
 
@@ -130,6 +138,21 @@ _________        ___.                                     __
             GM_xmlhttpRequest({
                 method: "GET",
                 url: $parse_link,
+                headers: {
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                    "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+                    "Connection": "keep-alive",
+                    "DNT": "1",
+                    "Host": "www.kinopoisk.ru",
+                    "Priority": "u=0, i",
+                    "Referer": "https://sso.kinopoisk.ru/",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-site",
+                    "Sec-Fetch-User": "?1",
+                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0"
+                },
                 onload: function(response) {
                     if (response.finalUrl !== $parse_link && response.finalUrl.match(/\/(\d+)\//)[0] !== $parse_link.match(/\/(\d+)\//)[0]) return loading_handler();
 
@@ -194,24 +217,29 @@ _________        ___.                                     __
                             url: 'https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/main/config.json',
                             onload: function(response) {
 
+                                function update_able($current_version, $last_version) {
+                                    let $v1 = $current_version.split(/[./-]/).map(Number).filter(s => !isNaN(s));
+                                    let $v2 = $last_version.split(/[./-]/).map(Number).filter(s => !isNaN(s));
+
+                                    if (JSON.stringify($v1) === JSON.stringify($v2)) return 0;
+
+                                    let $n1,$n2;
+                                    for (let i = 0; i < Math.max($v1.length, $v2.length); i++) {
+                                        $n1 = $v1[i] || 0;
+                                        $n2 = $v2[i] || 0;
+
+                                        if ($n1 > $n2) {return 0} else if ($n1 < $n2) {break}
+                                    }
+                                    return 1;
+                                }
+
                                 let $current_version = GM_info.script.version;
                                 let $last_version = JSON.parse(response.responseText).version.stable;
 
-                                let $v1 = $current_version.split(/[./]/).map(Number).filter(s => !isNaN(s));
-                                let $v2 = $last_version.split(/[./]/).map(Number).filter(s => !isNaN(s));
-
-                                if (JSON.stringify($v1) === JSON.stringify($v2)) return
-
-                                let $n1,$n2;
-                                for (let i = 0; i < Math.max($v1.length, $v2.length); i++) {
-                                    $n1 = $v1[i] || 0;
-                                    $n2 = $v2[i] || 0;
-
-                                    if ($n1 > $n2) {return} else if ($n1 < $n2) {break}
-                                }
+                                if (update_able($current_version, $last_version) === 0) return;
 
 
-                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; max-height: 95vh; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100; overflow-y: auto} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px; max-height: 75vh; overflow-y: auto} .innovation {margin: 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
+                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; max-height: 96vh; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100; overflow-y: auto} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px; max-height: 75vh; overflow-y: auto} .innovation {margin: 0.8em 20px 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .version_highlighting {display: flex; position: relative; align-items: center; text-align: center; left: -12.5px;} .version_highlighting::before, .version_highlighting::after {content: ""; flex: 1; border-bottom: 1px solid hsla(0, 0%, 50%, .33);} .version_highlighting::before {margin: 0 10px;} .version_highlighting::after {margin: 0 12px 0 10px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
 
                                 $('ui').prepend($('<update>', {style: 'display: none'}).append(
                                     $('<div>', {style: 'height: 100vh; width: 100vw; justify-content: center; align-items: center; display: flex;'}).append(
@@ -245,14 +273,27 @@ _________        ___.                                     __
                                     url: 'https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=Free%20kinopoisk.user.js',
                                     onload: function(response) {
 
-                                        let $lastCommit = JSON.parse(response.responseText)[0].commit.message;
-                                        let $lines = $lastCommit.split('\n\n').slice(1).join('\n').split(/\r?\n/);
+                                        let $current_version = GM_info.script.version;
+                                        let $versions = JSON.parse(response.responseText).map(s => {
+                                            let $commits = s.commit.message.split('\n\n')[0].match(/v2077v(\.\d+)+/);
+                                            return $commits ? $commits[0] : null;
+                                        }).filter(Boolean);
+                                        for (let i in $versions) {
+                                            if (update_able($current_version, $versions[i]) === 0) {
+                                                if (i == 1) {$('span.version_highlighting').remove();}
+                                                break;
+                                            } else if ($versions[i] !== $versions[i-1]) {
+                                                $('.update_list').append($('<span>', {class: 'version_highlighting', text: $versions[i]}));
+                                                let $lastCommit = JSON.parse(response.responseText)[i].commit.message;
+                                                let $lines = $lastCommit.split('\n\n').slice(1).join('\n').split(/\r?\n/);
 
-                                        for (let i = 0; i < $lines.length; i++) {
-                                            if ($lines[i] === '--RU--') {
-                                                $('.update_list').append($('<span>', {class: 'highlighting'}));
-                                            } else {
-                                                $('.update_list').append($('<p>', {text: $lines[i], class: 'innovation'}))
+                                                for (let i = 0; i < $lines.length; i++) {
+                                                    if ($lines[i] === '--RU--') {
+                                                        $('.update_list').append($('<span>', {class: 'highlighting'}));
+                                                    } else {
+                                                        $('.update_list').append($('<p>', {text: $lines[i], class: 'innovation'}))
+                                                    }
+                                                }
                                             }
                                         }
 
@@ -464,7 +505,7 @@ _________        ___.                                     __
     if (window.location.host === 'www.kinopoisk.ru') {
         addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
         document.addEventListener('DOMContentLoaded', function() {
-            $('body').on('mousedown', 'a[href]:not([href*="?"])', function() {
+            $('body').on('mousedown', 'a[href]:not([href*="?"]):not([target="_blank"])', function() {
                 $(this).off();
                 let url = $(this).attr('href');
                 window.location.href = url;
@@ -474,33 +515,42 @@ _________        ___.                                     __
                     $(this).attr('href', $(this).attr('href').replace(/\/watch\/.*/, ''));
                     $(this).addClass('processed');
                 });
+                $('li[role="listitem"]:not(.processed)').each(function() {
+                    let $item = $(this).find('a:eq(0)');
+                    let $type = $item.attr('id').includes("tvSeries") ? 'series' : $item.attr('id').includes("film") ? 'film' : '';
+                    $item.attr('href', `https://kinopoisk.ru/${$type}/${$item.attr('id').replace(/[^0-9]/g, '')}`);
+                    return $(this).addClass('processed');
+                })
             }, 200);
         });
         if (!window.location.pathname.includes('/film') && !window.location.pathname.includes('/series')) {
             document.addEventListener('DOMContentLoaded', function() {
                 setInterval(function() {
-                    $('a:contains("Смотреть"):not(.processed)').each(function() {
-                        let $spin = $('<div>', {class: 'spinner', style: `margin: 1px 0 0 ${($(this).outerWidth()-90.98)/4.668}px; width: ${$(this).outerHeight()/52*30}px; height: ${$(this).outerHeight()/52*30}px; border-width: ${Math.ceil($(this).outerHeight()/52*30/5)}px;`});
-                        let $old = $(this);
-                        $old.addClass('processed');
+                    $('a:not(.processed)').each(function() {
+                        if ($(this).text().trim() === "Смотреть") {
+                            let $spin = $('<div>', {class: 'spinner', style: `margin: 1px 0 0 ${($(this).outerWidth()-90.98)/4.668}px; width: ${$(this).outerHeight()/52*30}px; height: ${$(this).outerHeight()/52*30}px; border-width: ${Math.ceil($(this).outerHeight()/52*30/5)}px;`});
+                            let $old = $(this);
+                            $old.addClass('processed');
 
-                        $old.css('pointer-events', 'none');
-                        $old.contents().filter(function() {
-                            return this.nodeType === 3;
-                        }).wrap("<span></span>");
-                        $old.find('*').css('filter', 'blur(5px)');
+                            $old.css('pointer-events', 'none');
+                            $old.contents().filter(function() {
+                                return this.nodeType === 3;
+                            }).wrap("<span></span>");
+                            $old.find('*').css('filter', 'blur(5px)');
 
-                        $old.append($spin);
-                        let $check_load = setInterval(function() {
-                            if (!$('.spinner').length || document.readyState === 'complete') {
-                                let $new_link = $old.parents().eq(4).find('a:eq(0)').attr('href').split('/');
-                                clearInterval($check_load);
-                                $spin.remove();
-                                setTimeout(function() {
-                                    $old.attr('href', `https://sspoisk.ru/${$new_link[1]}/${$new_link[2]}/`).find('*').css('filter', '').end().css('pointer-events', 'unset');
-                                }, 10);
-                            }
-                        }, 50);
+                            $old.append($spin);
+                            let $check_load = setInterval(function() {
+                                if (!$('.spinner').length || document.readyState === 'complete') {
+                                    let $new_link = $old.parents().eq(4).find('a[href*="/film/"], a[href*="/series/"]').eq(0).attr('href').split('/');
+                                    let $index = $new_link.findIndex(part => part === 'film' || part === 'series');
+                                    clearInterval($check_load);
+                                    $spin.remove();
+                                    setTimeout(function() {
+                                        $old.attr('href', `https://sspoisk.ru/${$new_link[$index]}/${$new_link[$index+1]}/`).find('*').css('filter', '').end().css('pointer-events', 'unset');
+                                    }, 10);
+                                }
+                            }, 50);
+                        }
                     });
                 });
             });
