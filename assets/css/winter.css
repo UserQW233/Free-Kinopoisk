@@ -1,0 +1,18 @@
+body {
+    animation: winterColorChange 10s forwards;
+}
+
+snowfall span {
+    position: absolute;
+    font-family: Times serif;
+    z-index: 0;
+}
+
+@keyframes winterColorChange {
+    0% {
+        background-color: #2A3440;
+    }
+    100% {
+        background-color: #213349
+    }
+}

@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.2.newway
+// @version        2077v.1.7/1.newway
+// @host           https://github.com/ecXbe/Free-Kinopoisk/raw/refs/heads/main
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
@@ -71,14 +72,23 @@ _________        ___.                                     __
     'use strict';
     const $ = jQuery.noConflict(true);
 
+    function importStyle(filepath) {
+        let $host = GM_info.scriptMetaStr.match(/@host\s+([^\n]+)/)?.[1]?.trim();
+        let $link = `${$host}/${filepath}`;
+
+        let $head = $('head');
+        if (!$head) return;
+        return $('<link>', {rel: 'stylesheet', href: $link}).appendTo($head);
+    
+    }
+
     function addGlobalStyle(css) {
         let $head = $('head');
         if (!$head) return
-        return $('<style>', {type: 'text/css', text: css}).appendTo($head)
+        return $('<style>', {type: 'text/css', text: css}).appendTo($head);
     }
 
     const kinopoisk = function() {
-        addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);width: 30px;height: 30px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
         window.addEventListener('load', function() {
             const $oldButton = $('button.kinopoisk-watch-online-button');
 
@@ -127,7 +137,7 @@ _________        ___.                                     __
         $('body').hide();
         $('title').text(`Кинопоиск.`);
 
-        addGlobalStyle(`body {animation: colorChange .75s;} @keyframes colorChange {0% {background-color: #1E1E1E;} 100% {background-color: #2A3440;}} section {transform: translateY(5.6vh); min-height: 550px;} info {display: block; margin-top: 90vh;} ui {transition: transform 2s ease-in-out; display: block;} .star {margin: 25px 2px; height: 0; width: 0; position: relative; border-right: 17.5px solid transparent; border-bottom: 12.25px solid #979797; border-left: 17.5px solid transparent; transform: rotate(35deg);} .star:before, .star:after {content: ""; height: 0; width: 0; position: absolute;} .star:before {top: -9.1px; left: -11.2px; border-bottom: 14px solid #979797; border-left: 5.25px solid transparent; border-right: 5.25px solid transparent; transform: rotate(-35deg);} .star:after {top: 0.7px; left: -18px; border-right: 17.5px solid transparent; border-bottom: 12.55px solid #979797; border-left: 17.5px solid transparent; transform: rotate(-70deg);} .active-star, .active-star:before, .active-star:after {border-bottom-color: #c6cbf1;} .head_some-info {display: flex; margin-bottom: 15px;} .title_some-info {width: 160px;} .title_some-info, .some-info {font-size: 0.83em; font-weight: bold; max-width: 500px;}`);
+        importStyle('assets/css/watch.css');
 
         let $remove_ad = setInterval(function() {
             let $ad = $('body').children('div:not([class])').first();
@@ -143,17 +153,12 @@ _________        ___.                                     __
             $('div#TopAdMb:eq(0), div.topAdPad:eq(0), div#tgWrapper:eq(0)').hide().remove();
 
 
-
             $('body').show();
 
             $('head').append('<link rel="icon" href="https://kinopoisk-ru.clstorage.net/1jl61k131/6c3b11mr2/oyV_OzKp_0NaznH5OZz57SD7x2LyqJdTr3wYd-9BcXe3lxk8jFuIBeHTZKMalF3QZMVSHXwthDxVt3oAmlLOLg_Z-vaTMSMbSsNNhTmp_ZUIjrcCh9zvi2pAcGf7qRQPj3MhiMgbNIgJlwgrJoy48Ii55hEUpPh8XQ6awMqGCuav9VoWQw3fBypWETmhwZHJOALfl6_Aq0O7cPCXCzX447PXMWxMA4Colf94d7qkYFj0wRbZ5LxwuOkKIqwGvmp-kzXyws91gy8ygj0RPQ31vZAOS2cXuNtnk_yMV69dBHsP0_VATO8kPGkHBH9K9LwwAMne1WxoHBTtGpLctr7WEks1FhpvCUuH1qY9wU1JxZ0wckf_67CH38sAANMTGcwfZ9OVjFT7dLgVn7yrphzgfJwxihVwOJAAtcqSmPIy2jIzbTa65wHP49qG_YH1-d0N9HpfSxPEq3sLeJCTh1FMc0tvKdQAc7gowUPwUxIwVNyI_WYBxLQsoL3KFqTSevIekyHWDicNVxOSPp2dsTl1BTDyc8-j0Cd7o0SIewNRYNc_jxWgxKt4jAmfdCcCDPhcnAni1fjkiPzpamKcujIOlntt-gar9Z-XBtrJ4cm9EZmoiudzk8BTxy8U_IvTEYhLy9v5HOAriIRpQ7DbJrhUoJz9Fu3UeBRwSc6GnL7GhoK70YI6M1H7o8LOwaWJPV2VlM7T85ssC6efGEDXd5XoG8fnmSDMc1Qofb_IGz50cOC8iTZ5_GSs2MX6kvS2avq2Qz1yYqvF__tGokH9RbmlWQDif6sTBO8ju3zEmx9teCcbA0G8WJ-sxAnjlF-W5LR84CVSYXyQFKCJutKsDo7GLpNhPsILwc-Tmk5hFQEB7YU8YkvrJ_R_L6dgeBdXSdTjN4fxqMDnuHR5R-BP7gCsvIjJFtXU9JwQpTLqvEKW_sbjIeZ-OykT1wJOXQ0ZCYFFCGZnI_dUfzc_XODzwzHEl6NDQQAYB2A4tQuc90boBHQ0OWZldPgA_PGCwpTOzmq-b0maiusF-yOutk29mS1xSbAOz3_vmAtHSwTwkwMxmM-PixGc7MdsLJEL_JOekIA8uFXOceQ4tJwhrpIs3gaSDlP5Iu5nPUPnJhZVYd1FXWlQ4ncTL1wr66tokEdDVRDrZ-spMJwPhDgF8xArKvxwzHih5lGIqHDQXf7eZELilp5fXapCKzXHw07-te1NVVmxDO73o_egc6fLSDhPw01gnwObdWyA2_x09QvEw-Z8rCygkQbFdDg8_NWigjzSflqCL4W-ykOFE2sOGl09NfkZDZCWT89rGIM_ywQwR0dNbOu7c0UQdPtkKE3n4KtqkEhEjN3aLTwY8MzJYvI0uuJWmjOt9tprkUdDmvrZQTFd3TUwzvcHk3zvv7vYsONzbZCL78NlvIArlAzVt-DbzixUuDzJhn3IyPgk_WrutLpaVvoXcTbGG1XTmy7GwQnFGXUB7LJPtw-Mn6MH4FQr_0lgA2_zCZiAl-gQZfeY8-oAKCgURXItXBDwoPHOFhyOsgJmo0FiEhedwwtWCl0FVR2ZlZTOZ4ff3AMzEwDgaxNBDNO_O-0wjHeAkBW37KvmjEgAAP1ywfCkCNTB7nrUItJubkOxWp4XHSNvuhK1JcWlWe0wYv-Li0R7O48o8GPnWWSDexNBqGQvHKDZz9SDTiDovBTN6nHQLOwQfYqGLHJGhnpvdT5KB0nfr9reKTmpSXn9vBIn7_eII1_HzERbkxXgI7P7gSjga6hMZctoM0r4hFzMuQbFaPgwQN1mEiAOSkb6e80ixpOxB5s-ml35rZUZiaju8yMbdCu7CwTU068JjBu_D-GcmJNozMGXHDNOEDTYkAlaYQisCFTtvla0pk7ehu8plvqfnUdTpsLxpbUx-W3Utp_3O0wPXwtYlIt7mRDnAwcZ1BDjpFDFFzAzBpS8NMz1flFEYJQAcfJauEJ2kpqncY46Z8kDC_a2lTFVAenFPJpf4zv8gx8n7PjHAznEB3_nzQD855RM8ftwA_r8tDgguZp5sOTw0F2yTmx2ToYew72mWpOp3xuKOjm1lRWlbZR-v7-3XK-3m2D4V2fdnE8b5820fO-0pJEPdM_2vOzQ4InGbYjA2JRtYp70ptoucuvBYvI_uavXPia57UUpzW04ehP3nwS_b1fsFCtXpdgrOwvtOMBTpKyFlwArsnTc6AAlipHcCJhE8SZi7Oq2iiqjsZ7Cz1krTzaS7WkJScUBaGor4xvQqz8z0HgDWynUCydL7WTEd5C88eP4Q2IcxIQATTbF9BSULL22DtxaWs6iWzH-jj-RIxd2Ws0ltd0N-VTOp-vbVIcn8_hoH-dpWEvvt52gdBcAoIlbdDtqmMyMFKHGhQyIYLTxFl5MBp6Ost9NEkLPudvncpqR8a2VWZ2cLrd_h7gvL0vcZGerLXAnj9e5ZFADgNT5Y9Rf9vRAtAQxQpX0lHAgNbJWpHKe4i5bdQI2n0Ev74o2La2lASUReK53J6eMKxOnEMwjK8VIR7uHzUjsnwQIyZsIzwZ4bDAUdU4NzDTogP1ypsgCEsL2Jy32ike9l2MCmunN0cWFHWC-NyvzdAsnS-x0m_u5lHfPy5VImJ_o0B0fXKd-4EzIsPWKATiMgFTtsiaoVsryQpMNVm5DDYeDNrbdpUG9-eWA8jOHL7jjH1fU6F_r7YRv92MVmJALUHBh-4C7Kjz4BAytQpkEKPj4xcJCxErmWp4b9b5uO9l7owJ2OQ0ZrU3FaBI39x98H_9zbMijxx18W8dbLeRAD7SY-c9c_yLsSMzkUVppBPDYCOluCkByTv62S23Wtot9y9M-CiWFXYXVGWS6twuv8KPH_9gAK08ZCCfHv6mICMv0EFVvXJvm_Dzs7CXSWXhonEgJjopcssraqjMF_vqLGd8Tdtoh9YU96Vl8ft-3ByBz309w1NPjIZRbI_vxVGhDiESJk_BTkrDcIDgNPvVgtByM3WIA/projector-favicon/favicon-16.svg" type="image/svg+xml">');
             let $Video_pleer = $('div.wrapper').css('width', '70%').wrap('<div style="display: flex; align-items: center"></div>').parent();
             $Video_pleer.css('display', 'none'); $Video_pleer.addClass('VideoPleer');
             $('body').append('<div class="spinner"></div>');
-            addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: fixed;top: 50%;left: calc(50% - 25px);transform: translate(-50%, -50%);width: 50px;height: 50px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
-            addGlobalStyle(`.header_container {background-color: #1b2229; border-radius: 48px; margin-right: 5px; width: 47px; transition: all 0.5s ease-in-out;} .header_homepage {filter: invert(45%); position: absolute; transform: translateY(32%) translateX(-35px); opacity: 0; transition: all 0.5s ease-in-out; user-select: none;} .header_homepage:hover {filter: invert(30%)} .header_container:hover {width: 80px; transition: all 0.5s ease-in-out;} .header_container:hover .header_homepage {opacity: 1; transform: translateY(32%) translateX(-2px); transition: transform 0.5s ease-in-out, opacity .5s ease-in-out;} iframe.kinobox__iframe, div.kinobox__loaderWrapper {border-radius: 10px;} body {user-select: none;} .kinobox {border-radius: 10px; box-shadow: -2px 2px 6px 2px rgba(0, 0, 0, 0.3);} .kinobox__menu--list {border-radius: 6px 0 0 6px; transition: all .2s ease-in-out; outline: none; box-shadow: -1px -1px 6px 1px rgba(0, 0, 0, 0.3);} .kinobox__menuItem {color: white; background: #41536b !important;} .kinobox__menuItem:hover {background: #7ba2d1 !important;} .kinobox__menuItem--active {background: #5d7ea5 !important;}`)
-            addGlobalStyle(`.watch_mode {position: relative; width: 20px; height: 20px;} .watch_mode:hover {filter: invert(30%) !important;} .watch_mode:before {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/top-arrow.025c12cf.svg); top: 1px; right: 0} .watch_mode:after {background-image: url(https://yastatic.net/s3/kinopoisk-frontend/hd-www/release/_next/static/media/bottom-arrow.b4fcf81a.svg); top: 10px; left: 3px;} .watch_mode:before, .watch_mode:after {position: absolute; width: 8px; height: 8px; content: ""; background-repeat: no-repeat; background-position: 50%; background-size: contain;} .watch_active:before, .watch_active:after {transform: rotate(180deg)} .poster.watch, .kinobox__menu.watch {display: none !important} .united_el.watch {max-width: 97.56% !important} .VideoPleer.watch {justify-content: center} .pre_info_arrow:not(:hover) {.half_arrow.first_half.watch {background-color: #1e2328 !important; transform: translateX(2.4px) rotate(0deg) !important} .half_arrow.second_half.watch {background-color: #1e2328 !important; transform: translateX(-2.4px) rotate(0deg) !important}} .pre_info_arrow {display: flex; align-items: center; justify-content: center; cursor: pointer; width: 24px; height: 24px} .half_arrow {background-color: #171c21; width: 12px; height: 4px; border-radius: 100px; transition: transform .2s ease-in-out;} .pre_info_arrow:hover {.half_arrow {background-color: #aaa !important}}`);
-
             let $parse_link = 'https://www.kinopoisk.ru'+window.location.pathname;
 
             GM_xmlhttpRequest({
@@ -195,9 +200,9 @@ _________        ___.                                     __
                         let month = now.getMonth();
                         let date = now.getDate();
                         if (!((month === 11 && date >= 1) || (month === 0 && date <= 10))) return;
-                        setTimeout(function() {
-                            addGlobalStyle(`body {animation: winterColorChange 10s forwards;} @keyframes winterColorChange {0% {background-color: #2A3440;} 100% {background-color: #213349}`);
 
+                        importStyle('assets/css/winter.css');
+                        setTimeout(function() {
                             let $crds = []; let $lftrght = []; let $x_mv = []; let $snowflake = [];
                             let $h_site = $('body').height(); let $w_site = $(document).width();
                             let $snowcolor = ["#b9dff5", "#7fc7ff", "#7fb1ff", "#7fc7ff", "#b9dff5"];
@@ -214,7 +219,7 @@ _________        ___.                                     __
                                 $snowflake[i].posx = Math.floor(Math.random() * ($w_site-$snowflake[i].size));
                                 $snowflake[i].posy = Math.floor(Math.random() * (2*$h_site-$h_site-2*$snowflake[i].size));
 
-                                $('snowfall').append($('<span>', {text: '❄', id: `s${i}`, style: `position: absolute; font-family: Times; font-size: ${$snowflake[i].size}px; color: ${$snowcolor[Math.floor(Math.random() * $snowcolor.length)]}; z-index: 0; left: ${$snowflake[i].posx}px; top: ${$snowflake[i].posy}px`}));
+                                $('snowfall').append($('<span>', {text: '❄', id: `s${i}`, style: `font-size: ${$snowflake[i].size}px; color: ${$snowcolor[Math.floor(Math.random() * $snowcolor.length)]}; left: ${$snowflake[i].posx}px; top: ${$snowflake[i].posy}px`}));
                             }
 
                             setInterval(function() {
@@ -261,8 +266,6 @@ _________        ___.                                     __
 
                                 if (update_able($current_version, $last_version) === 0) return;
 
-
-                                addGlobalStyle(`update {position: absolute} .update_menu {width: 500px; min-height: 220px; max-height: 96vh; background-color: #394555; color: #e1bdbd; border-radius: 12px; font: 14px normal tahoma, verdana, arial, sans-serif; box-shadow: 3px 3px 6px 2px rgba(0, 0, 0, 0.3); z-index: 100; overflow-y: auto} .version_update {display: block} .version_update:after {content: ""; display: block; position: relative; top: .44em; border-bottom: 1px solid hsla(0, 0%, 50%,.33); margin-right: 25px;} .update_list {margin: 25px 0; height: auto; min-height: 48px; max-height: 75vh; overflow-y: auto} .innovation {margin: 0.8em 20px 0.8em 0;} .highlighting:after {content: "";  display: block; position: relative; border-bottom: 1px solid hsla(0, 0%, 50%, .33); margin: 0 100px;} .version_highlighting {display: flex; position: relative; align-items: center; text-align: center; left: -12.5px;} .version_highlighting::before, .version_highlighting::after {content: ""; flex: 1; border-bottom: 1px solid hsla(0, 0%, 50%, .33);} .version_highlighting::before {margin: 0 10px;} .version_highlighting::after {margin: 0 12px 0 10px;} .update_buttons {justify-content: end; display: flex; margin: 0 20px 15px 0;} .update_later {margin-right: 10px; align-items: center; display: flex; font-size: 12px; cursor: pointer;} .update_later:hover {color: #ed9292;} .update_now {width: auto; height: 30px; color: white; background-color: black; border: none; border-radius: 5px; cursor: pointer;} .update_now:hover {background-color: #252525 !important;}`)
 
                                 $('ui').prepend($('<update>', {style: 'display: none'}).append(
                                     $('<div>', {style: 'height: 100vh; width: 100vw; justify-content: center; align-items: center; display: flex;'}).append(
@@ -335,12 +338,10 @@ _________        ___.                                     __
                     loading_handler();
                 }
             })
-            addGlobalStyle(`@media (max-width: 1200px) {.watch_mode {display: none}} @media (max-width: 50rem) {.poster {display: none} .wrapper, .NameFilm_head {width: 80% !important; margin-left: auto; margin-right: auto}} [class*="back-arrow"] {color: #888 !important; width: 0; height: 0; border-width: 6px; border-style: solid; border-bottom-color: transparent; border-left-color: transparent; margin: 10px; transform: rotate(-135deg)} [class*="back-arrow"]:hover {color: #aaa !important} [class*="back-arrow"]:before {right: 0; top: -3px; position: absolute; height: 4px; box-shadow: inset 0 0 0 32px; transform: rotate(-45deg); width: 15px; transform-origin: right top} [class*="back"] {position: relative; display: inline-block; vertical-align: middle; color: #666; box-sizing: border-box} [class*="back"]:after, [class*="back"]:before {content: ""; box-sizing: border-box}`);
         });
     };
 
     const loading_handler = function() {
-        addGlobalStyle(`.reload_page_btn {margin: 0 3px; color: #e1bdbd; cursor: pointer; text-decoration: underline;} .offline_mode_btn {margin-left: 3px; color: #e1bdbd; cursor: pointer; text-decoration: underline;} .loading_alert {position: relative; top: 95%; display: flex; justify-content: center; color: #b5b5b5}`)
         $('body').append(
             $('<div>', {class: 'loading_alert', html: '<span>Похоже возникла проблема.</span><span class="reload_page_btn">Обновите</span><span>страницу или включите</span><span class="offline_mode_btn">Автономный режим</a>'})
         )
@@ -357,19 +358,19 @@ _________        ___.                                     __
 
         $('title').text(`Кинопоиск. ${$NameFilm}`);
         let $section = $('<section>').append(
-            $('<div>', {class: 'united_el', style: 'max-width: 1200px; min-width: 300px; margin-left: auto; margin-right: auto; transition: max-width .2s ease-in-out;'}).append(
-                $('<div>', {style: 'background-color: #222a33; border-radius: 12px; box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.3); margin: 0 auto 15px;'}).append(
-                    $('<div>', {style: 'padding: 10px 15px; position: relative;'}).append(
+            $('<div>', {class: 'united_el'}).append(
+                $('<div>').append(
+                    $('<div>').append(
                         $('<header>', {class: 'NameFilm_head'}).append(
-                            $('<h2>', {style: 'margin-bottom: 10px; display: inline-block; font: 20px normal tahoma, verdana, arial, sans-serif; color: #b5b5b5'}).append(
-                                $('<div>', {style: 'display: flex; align-items: center;'}).append(
+                            $('<h2>').append(
+                                $('<div>').append(
                                     $('<div>', {class: 'header_container'}).append(
-                                        $('<i>', {style: 'margin-top: 15px; margin-bottom: 16px; margin-left: 15px; margin-right: 20px;', class: 'back-arrow', title: 'Назад', draggable: 'false'}).click(function() {window.location.host = 'www.kinopoisk.ru'})
+                                        $('<i>', {class: 'back-arrow', title: 'Назад', draggable: 'false'}).click(function() {window.location.host = 'www.kinopoisk.ru'})
                                     ).append(
                                         $('<img>', {class: 'header_homepage', src: 'https://avatars.mds.yandex.net/get-bunker/120922/4a5dd24b637255a8fc5190bb353ef60c21018288/orig', title: 'Главная', draggable: 'false'}).click(function() {window.location.href = 'https://www.kinopoisk.ru'})
                                     )
                                 ).append(
-                                    $('<div>', {style: 'user-select: text; filter: drop-shadow(5px 4px 5px rgba(0, 0, 0, 0.3));'}).append($alt_name == 0 ? $NameFilm : `${$NameFilm} / ${$alt_name}`)
+                                    $('<div>', {class: 'NameFilm'}).append($alt_name == 0 ? $NameFilm : `${$NameFilm} / ${$alt_name}`)
                                 )
                             )
                         )
@@ -380,28 +381,28 @@ _________        ___.                                     __
         if ($offline === false) {
 
             $('<info>', {style: 'display: none'}).append(
-                $('<div>', {style: 'max-width: 1000px; min-width: 300px; margin-left: auto; margin-right: auto;'}).append(
-                    $('<pre_info>', {style: 'display: none; margin-bottom: 1.2rem; justify-content: center;'}).append(
+                $('<div>', {class: 'info_container'}).append(
+                    $('<pre_info>').append(
                         $('<div>', {class: 'pre_info_arrow', title: 'Прокрутите вверх для возвращения обратно'}).append(
-                            $('<div>', {class: 'half_arrow', style: 'transform: translateX(2.4px) rotate(-20deg)'})
+                            $('<div>', {class: 'half_arrow first_half_up'})
                         ).append(
-                            $('<div>', {class: 'half_arrow', style: 'transform: translateX(-2.4px) rotate(20deg)'})
+                            $('<div>', {class: 'half_arrow second_half_up'})
                         ).click(function() {
                             $('ui').css('transform', '');
                             $(this).css('pointer-events', 'none');
                             setTimeout(() => $(this).css('pointer-events', ''), 50);
                         })
                     )).append(
-                    $('<div>', {style: 'background-color: #222a33; border-radius: 12px; box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.3); padding: 20px 0 5px 15px;', class: 'information'})
+                    $('<div>', {class: 'information'})
                 )
             ).appendTo($('body'));
 
             $section.append(
-                $('<pre_info>', {style: 'display: none; margin-top: 1.6rem; justify-content: center;'}).append(
+                $('<pre_info>', {style: 'display: none;'}).append(
                     $('<div>', {class: 'pre_info_arrow', title: 'Прокрутите вниз для подробной информации'}).append(
-                        $('<div>', {class: 'half_arrow first_half', style: 'transform: translateX(2.4px) rotate(20deg)'})
+                        $('<div>', {class: 'half_arrow first_half'})
                     ).append(
-                        $('<div>', {class: 'half_arrow second_half', style: 'transform: translateX(-2.4px) rotate(-20deg)'})
+                        $('<div>', {class: 'half_arrow second_half'})
                     ).click(function() {
                         if ($('.watch').length) {
                             $('i.watch_mode').removeClass('watch_active');
@@ -422,27 +423,27 @@ _________        ___.                                     __
 
             $Video_pleer.append(
                 $('<div>').append(
-                    $('<img>', {style: 'margin-left: 10px; border-radius: 6px; box-shadow: 2px 2px 6px 3px rgba(0, 0, 0, 0.3);', class: 'poster', src: $url, draggable: 'false'})
+                    $('<img>', {class: 'poster', src: $url, draggable: 'false'})
                 )
             ).append(
-                $('<div>', {style: 'display: flex; position: absolute; align-self: end; bottom: 0; right: 0; margin: 0 16px 10px 0;'}).append(
-                    $('<i>', {class: 'watch_mode', style: 'filter: invert(45%);'}).click(function() {if ($('ui').css('transform') === 'none') {$(this).toggleClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').toggleClass('watch');}})
+                $('<div>', {class: 'watch_mode_container'}).append(
+                    $('<i>', {class: 'watch_mode'}).click(function() {if ($('ui').css('transform') === 'none') {$(this).toggleClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').toggleClass('watch');}})
                 )
             );
 
             $('.information').append(
-                $('<div>', {style: 'display: flex;'}).append(
+                $('<div>').append(
                     $('<div>').append(
-                        $('<img>', {style: 'border-radius: 6px; box-shadow: 2px 2px 6px 3px rgba(0, 0, 0, 0.3);', src: $url, draggable: 'false'})
+                        $('<img>', {src: $url, draggable: 'false'})
                     )
                 ).append(
-                    $('<div>', {style: 'margin: 15px 0 0 15px; font: 14px normal tahoma, verdana, arial, sans-serif;color: #b5b5b5; filter: drop-shadow(5px 4px 5px rgba(0, 0, 0, 0.3));'}).append(
-                        $('<h2>', {style: 'display: flex;'}).append(
+                    $('<div>', {class: 'information_text'}).append(
+                        $('<h2>').append(
                             'Информация'
                         ).append(
-                            $('<div>', {style: 'margin: -20px 45px 0 auto;'}).append(
-                                $('<div>', {style: 'display: flex;'}).append(
-                                    $('<div>', {style: 'font-size: 14px;display: flex;position: relative;'}).append(
+                            $('<div>', {class: 'rating_container'}).append(
+                                $('<div>', {class: 'star_container'}).append(
+                                    $('<div>', {class: 'star-line'}).append(
                                         $('<div>', {class: 'star'})
                                     ).append(
                                         $('<div>', {class: 'star'})
@@ -454,14 +455,14 @@ _________        ___.                                     __
                                         $('<div>', {class: 'star'})
                                     )
                                 ).append(
-                                    $('<div>', {style: 'font-weight: bold; font-size: 30px; color: #c6cbf1; margin: auto 0 auto 15px;', text: $score})
+                                    $('<div>', {class: 'star_score', text: $score})
                                 )
                             ).append(
-                                $('<div>', {style: 'font-size: 0.83em; font-weight: bold; display: flex; justify-content: center;', text: 'Рейтинг'})
+                                $('<div>', {class: 'rating_text', text: 'Рейтинг'})
                             )
                         )
                     ).append(
-                        $('<div>', {style: 'font-size: 15px;'}).append(
+                        $('<div>', {class: 'about'}).append(
                             $('<div>', {class: 'head_some-info'}).append(
                                 $('<div>', {class: 'title_some-info', text: 'Год'})
                             ).append(
@@ -487,9 +488,9 @@ _________        ___.                                     __
                             )
                         )
                     ).append(
-                        $('<div>', {style: 'display: flex; justify-content: center; margin-top: 25px; font-style: italic; font-weight: bold; font-size: 13px;', text: $slogan})
+                        $('<div>', {class: 'citation', text: $slogan})
                     ).append(
-                        $('<div>', {style: 'display: flex; justify-content: center; margin: 30px 0 10px 0; font-weight: bold; font-size: 12px;', text: $description})
+                        $('<div>', {class: 'description', text: $description})
                     )
                 )
             );
@@ -526,7 +527,7 @@ _________        ___.                                     __
     }
 
     if (window.location.host === 'www.kinopoisk.ru') {
-        addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
+        addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);width: 30px;height: 30px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
         document.addEventListener('DOMContentLoaded', function() {
             $('body').on('mousedown', 'a[href]:not([href*="?"]):not([target="_blank"])', function() {
                 $(this).off();
