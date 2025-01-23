@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.7/1.newway
-// @host           https://github.com/ecXbe/Free-Kinopoisk/raw/refs/heads/main
+// @version        2077v.1.7/2.newway
+// @host           https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/refs/heads/main/
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
@@ -78,8 +78,13 @@ _________        ___.                                     __
 
         let $head = $('head');
         if (!$head) return;
-        return $('<link>', {rel: 'stylesheet', href: $link}).appendTo($head);
-    
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: $link,
+            onload: function(response) {
+                return $('<style>', {type: 'text/css', text: response.responseText}).appendTo($head);
+            }
+        })
     }
 
     function addGlobalStyle(css) {
