@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.7/3.newway
+// @version        2077v.1.7/4.newway
 // @host           https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/refs/heads/main
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
@@ -292,7 +292,7 @@ _________        ___.                                     __
                                     method: "GET",
                                     url: `https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=${$branch}`,
                                     onload: function(response) {
-                                        let $commit_match = GM_info.script.version.includes('newway') ? '/v2077v(\\.\\d+)+[^; ]*/' : '/v2077v(\\.\\d+)+/';
+                                        let $commit_match = GM_info.script.version.includes('newway') ? 'v2077v(\\.\\d+)+[^; ]*' : 'v2077v(\\.\\d+)+';
                     
                                         let $current_version = GM_info.script.version;
                                         let $versions = JSON.parse(response.responseText).map(s => {
