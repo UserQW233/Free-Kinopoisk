@@ -1,5 +1,5 @@
 function update_able($current_version, $last_version) {
-    if (GM_info.script.includes('newway')) {
+    if (GM_info.script.version.includes('newway')) {
         if ($current_version.includes('/') && !$last_version.includes('/')) return 1;
     }
 
