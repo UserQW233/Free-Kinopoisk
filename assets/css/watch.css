@@ -447,7 +447,7 @@ update > div {
     overflow-y: auto;
 }
 
-.update_menu > h2 {
+.update_menu > .update_head {
     margin-left: 12px;
 }
 

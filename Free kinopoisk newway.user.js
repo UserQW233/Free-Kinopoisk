@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.7/2.newway
-// @host           https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/refs/heads/main/
+// @version        2077v.1.7/3.newway
+// @host           https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/refs/heads/main
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js
@@ -11,6 +11,7 @@
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js
+// @require        https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/refs/heads/main/assets/js/update.js
 // @include        /^https:\/\/www\.kinopoisk\.ru\/.*$/
 // @include        /^https:\/\/.*flicksbar\..*$/
 // @include        /^https:\/\/thesaurus\.allohalive\..*$/
@@ -31,6 +32,7 @@
 // @compatible	   Opera
 // @license        CC-BY-SA-4.0
 // ==/UserScript==
+/* global update_able */
 
 /*
 _________        ___.                                     __
@@ -242,30 +244,17 @@ _________        ___.                                     __
                             }, 50)
                         }, 2000)
                     }
+                    
                     const update = function() {
+
+                        let $host = GM_info.scriptMetaStr.match(/@host\s+([^\n]+)/)?.[1]?.trim();
+                        let $branch = GM_info.script.version.includes('newway') ? 'Free%20kinopoisk%20newway.user.js' : 'Free%20kinopoisk.user.js';
+                    
                         GM_xmlhttpRequest({
                             method: "GET",
-                            url: 'https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/main/config.json',
+                            url: `${$host}/config.json`,
                             onload: function(response) {
-
-                                function update_able($current_version, $last_version) {
-                                    if ($current_version.includes('/') && !$last_version.includes('/')) return 1;
-
-                                    let $v1 = $current_version.split(/[./-]/).map(Number).filter(s => !isNaN(s));
-                                    let $v2 = $last_version.split(/[./-]/).map(Number).filter(s => !isNaN(s));
-
-                                    if (JSON.stringify($v1) === JSON.stringify($v2)) return 0;
-
-                                    let $n1,$n2;
-                                    for (let i = 0; i < Math.max($v1.length, $v2.length); i++) {
-                                        $n1 = $v1[i] || 0;
-                                        $n2 = $v2[i] || 0;
-
-                                        if ($n1 > $n2) {return 0} else if ($n1 < $n2) {break}
-                                    }
-                                    return 1;
-                                }
-
+                    
                                 let $current_version = GM_info.script.version;
                                 let $last_version = JSON.parse(response.responseText).version.newway;
 
@@ -273,11 +262,11 @@ _________        ___.                                     __
 
 
                                 $('ui').prepend($('<update>', {style: 'display: none'}).append(
-                                    $('<div>', {style: 'height: 100vh; width: 100vw; justify-content: center; align-items: center; display: flex;'}).append(
+                                    $('<div>').append(
                                         $('<div>', {class: 'update_menu'}).append(
-                                            $('<h2>', {class: 'update_head', style: 'margin-left: 12px', text: 'Доступно обновление'})
+                                            $('<h2>', {class: 'update_head', text: 'Доступно обновление'})
                                         ).append(
-                                            $('<div>', {style: 'margin: 0 5px 0 20px'}).append(
+                                            $('<div>', {class: 'update_info'}).append(
                                                 $('<span>', {text: $last_version, class: 'version_update'})
                                             ).append(
                                                 $('<div>', {class: 'update_list'})
@@ -287,7 +276,7 @@ _________        ___.                                     __
                                                 $('<span>', {class: 'update_later', text: 'Не сейчас'}).click(function() {$('update').remove(); $('section, info').css('pointer-events', '');})
                                             ).append(
                                                 $('<button>', {class: 'update_now', text: 'Обновить'}).click(function() {
-                                                    window.location.href = 'https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk%20newway.user.js'
+                                                    window.location.href = `https://github.com/ecXbe/Free-Kinopoisk/raw/main/${$branch}`;
                                                     setTimeout(function() {
                                                         $('.update_buttons, .version_update').remove();
                                                         $('.update_head').text('Вы обновились!');
@@ -301,12 +290,13 @@ _________        ___.                                     __
 
                                 GM_xmlhttpRequest({
                                     method: "GET",
-                                    url: 'https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=Free%20kinopoisk%20newway.user.js',
+                                    url: `https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=${$branch}`,
                                     onload: function(response) {
-
+                                        let $commit_match = GM_info.script.version.includes('newway') ? '/v2077v(\\.\\d+)+[^; ]*/' : '/v2077v(\\.\\d+)+/';
+                    
                                         let $current_version = GM_info.script.version;
                                         let $versions = JSON.parse(response.responseText).map(s => {
-                                            let $commits = s.commit.message.split('\n\n')[0].match(/v2077v(\.\d+)+[^; ]*/);
+                                            let $commits = s.commit.message.split('\n\n')[0].match($commit_match);
                                             return $commits ? $commits[0] : null;
                                         }).filter(Boolean);
                                         for (let i in $versions) {
@@ -335,6 +325,7 @@ _________        ___.                                     __
                             }
                         });
                     }
+
                     watching_initialization(false, $NameFilm, $alt_name, $url, $score, $year, $country, $genres, $duration, $slogan, $description);
                     snow();
                     update();
